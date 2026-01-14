@@ -1,0 +1,13 @@
+name: sorokchat
+services:
+  sorokchat.database:
+    image: postgres:18-alpine
+    container_name: sorokchat.database
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: sorokchat
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data/pgdata
