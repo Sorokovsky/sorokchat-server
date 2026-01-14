@@ -1,3 +1,9 @@
 spring:
   application:
     name: sorokchat
+springdoc:
+  swagger-ui:
+    urls:
+      - name: API
+        url: /openapi.yaml
+    disable-swagger-default-url: true
