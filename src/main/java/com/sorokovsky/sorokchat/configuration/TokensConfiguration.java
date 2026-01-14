@@ -8,6 +8,8 @@ import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jose.jwk.OctetSequenceKey;
 import com.sorokovsky.sorokchat.deserialization.JweTokenDeserializer;
 import com.sorokovsky.sorokchat.deserialization.JwsTokenDeserializer;
+import com.sorokovsky.sorokchat.factory.DefaultAccessTokenFactory;
+import com.sorokovsky.sorokchat.factory.DefaultRefreshTokenFactory;
 import com.sorokovsky.sorokchat.serialization.JweTokenSerializer;
 import com.sorokovsky.sorokchat.serialization.JwsTokenSerializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +17,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.text.ParseException;
+import java.time.Duration;
 
 @Configuration
 public class TokensConfiguration {
@@ -54,6 +57,22 @@ public class TokensConfiguration {
         return JwsTokenDeserializer
                 .builder()
                 .verifier(new MACVerifier(OctetSequenceKey.parse(accessSecretKey)))
+                .build();
+    }
+
+    @Bean
+    public DefaultAccessTokenFactory defaultAccessTokenFactory(@Value("${tokens.access.lifetime}") Duration lifetime) {
+        return DefaultAccessTokenFactory
+                .builder()
+                .lifetime(lifetime)
+                .build();
+    }
+
+    @Bean
+    public DefaultRefreshTokenFactory defaultRefreshTokenFactory(@Value("${tokens.refresh.lifetime}") Duration lifetime) {
+        return DefaultRefreshTokenFactory
+                .builder()
+                .lifetime(lifetime)
                 .build();
     }
 }
