@@ -14,6 +14,7 @@ public class SecurityConfiguration {
         http
                 .authorizeHttpRequests(configurer -> configurer
                         .requestMatchers("/swagger-ui/**", "/openapi.yaml", "/v3/api-docs/**").permitAll()
+                        .requestMatchers("/authorization/login", "/authorization/register").anonymous()
                         .anyRequest().authenticated()
                 );
         return http.build();
