@@ -1,0 +1,278 @@
+openapi: 3.0.3
+info:
+  title: Sorokchat - Український месенджер
+  description: Sorokchat - Український месенджер
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8080'
+paths:
+  /authorization/register:
+    post:
+      tags:
+        - Авторизація
+      summary: Реєстрація
+      description: Реєстрація користувача у системі
+      operationId: register
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewUserPayload'
+      responses:
+        201:
+          description: Успішна реєстрація
+          headers:
+            Location:
+              required: true
+              description: Посилання на зареєстрованого користувача
+              example: /authorization/profile
+            Authorization:
+              required: true
+              description: Токен доступу
+              example: Bearer <TOKEN>
+            Set-Cookie:
+              required: true
+              description: Кука з токеном оновлення
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetUserPayload"
+        403:
+          description: Вже авторизований користувач
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+        400:
+          description: Некоректні данні
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+  /authorization/login:
+    post:
+      tags:
+        - Авторизація
+      summary: Вхід
+      description: Вхід користувача у системі
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginPayload"
+      responses:
+        200:
+          description: Успішний вхід
+          headers:
+            Authorization:
+              required: true
+              schema:
+                description: Токен доступу
+                example: Bearer <TOKEN>
+            Set-Cookie:
+              required: true
+              description: Кука з токеном оновлення
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetUserPayload"
+        403:
+          description: Вже авторизований користувач
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+        400:
+          description: Некоректні данні
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+  /authorization/logout:
+    delete:
+      tags:
+        - Авторизація
+      summary: Вихід
+      description: Вихід користувача із системи
+      operationId: logout
+      security:
+        - bearerAuthorization: []
+      responses:
+        204:
+          description: Успішний вихід
+        401:
+          description: Неавторизований користувач
+          headers:
+            WWW-Authenticate:
+              required: true
+              schema:
+                  type: string
+                  description: Спосіб авторизації
+                  example: Bearer
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+  /authorization/profile:
+    get:
+      tags:
+        - Авторизація
+      summary: Авторизований користувач
+      description: Отримвання авторизованого користувача
+      operationId: profile
+      responses:
+        200:
+          description: Успішно
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetUserPayload"
+        401:
+          description: Неавторизований користувач
+          headers:
+            WWW-Authenticate:
+              required: true
+              schema:
+                type: string
+                description: Спосіб авторизації
+                example: Bearer
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+components:
+  securitySchemes:
+    bearerAuthorization:
+      type: http
+      scheme: bearer
+  schemas:
+    NewUserPayload:
+      type: object
+      description: Новий користувач
+      required:
+        - email
+        - password
+        - firstName
+        - lastName
+        - middleName
+      properties:
+        email:
+          description: Електронна адреса користувача
+          type: string
+          format: email
+          default: Sorokovskys@ukr.net
+        password:
+          description: Пароль користувача
+          type: string
+          format: password
+          default: <PASSWORD>
+        firstName:
+          description: Імʼя користувача
+          type: string
+          default: Андрій
+        lastName:
+          description: Прізвище користувача
+          type: string
+          default: Сороковстький
+        middleName:
+          description: Побатькові користувача
+          type: string
+          default: Іванович
+    LoginPayload:
+      type: object
+      description: Данні користувача для входу
+      required:
+        - email
+        - password
+      properties:
+        email:
+          description: Електронна адреса користувача
+          type: string
+          format: email
+          default: Sorokovskys@ukr.net
+        password:
+          description: Пароль користувача
+          type: string
+          format: password
+          default: <PASSWORD>
+    GetUserPayload:
+      type: object
+      description: Данні для отримання користувача
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - email
+        - password
+        - firstName
+        - lastName
+        - middleName
+      properties:
+        id:
+          type: integer
+          default: Ідентифікатор користувача
+          example: 1
+        createdAt:
+          type: string
+          description: Дата створення користувача
+          format: timestamp
+          example: 14.01.2026T13:25
+        updatedAt:
+          type: string
+          description: Дата оновлення користувача
+          format: timestamp
+          example: 14.01.2026T13:25
+        email:
+          description: Електронна адреса користувача
+          type: string
+          format: email
+          example: Sorokovskys@ukr.net
+        password:
+          description: Пароль користувача
+          type: string
+          format: password
+          example: <PASSWORD>
+        firstName:
+          description: Імʼя користувача
+          type: string
+          example: Андрій
+        lastName:
+          description: Прізвище користувача
+          type: string
+          example: Сороковстький
+        middleName:
+          description: Побатькові користувача
+          type: string
+          example: Іванович
+    ProblemDetail:
+      type: object
+      description: Стандартний формат відповіді про помилку (RFC 9457).
+      properties:
+        type:
+          type: string
+          format: uri
+          description: URI-посилання, яке ідентифікує тип проблеми. Зазвичай вказує на документацію.
+          example: https://example.com/probs/out-of-stock
+        title:
+          type: string
+          description: Короткий, зрозумілий для людини опис типу проблеми.
+          example: Помилка реєстрації
+        status:
+          type: integer
+          description: HTTP-код статусу, згенерований сервером.
+          example: 400
+        detail:
+          type: string
+          description: Детальне пояснення конкретної помилки в поточному контексті.
+          example: Не коректна електронна адреса.
+        instance:
+          type: string
+          format: uri
+          description: URI-посилання на конкретне виникнення проблеми (наприклад, шлях запиту).
+          example: /authorization/register
+      additionalProperties: true
