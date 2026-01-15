@@ -1,9 +1,12 @@
 package com.sorokovsky.sorokchat.configuration;
 
+import com.sorokovsky.sorokchat.configurer.JwtAuthenticationConfigurer;
 import com.sorokovsky.sorokchat.factory.DefaultAccessTokenFactory;
 import com.sorokovsky.sorokchat.factory.DefaultRefreshTokenFactory;
 import com.sorokovsky.sorokchat.model.Authority;
+import com.sorokovsky.sorokchat.point.UnauthenticatedEntryPoint;
 import com.sorokovsky.sorokchat.service.AuthorizationService;
+import com.sorokovsky.sorokchat.service.JwtUserDetailsService;
 import com.sorokovsky.sorokchat.service.UsersService;
 import com.sorokovsky.sorokchat.storage.BearerTokenStorage;
 import com.sorokovsky.sorokchat.storage.CookieTokenStorage;
@@ -19,7 +22,10 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class SecurityConfiguration {
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) {
+    public SecurityFilterChain securityFilterChain(
+            HttpSecurity http,
+            JwtAuthenticationConfigurer jwtAuthenticationConfigurer
+    ) {
         http
                 .authorizeHttpRequests(configurer -> configurer
                         .requestMatchers("/swagger-ui/**", "/openapi.yaml", "/v3/api-docs/**").permitAll()
@@ -31,6 +37,7 @@ public class SecurityConfiguration {
                 .sessionManagement(configurer -> configurer
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 );
+        http.apply(jwtAuthenticationConfigurer);
         return http.build();
     }
 
@@ -56,6 +63,27 @@ public class SecurityConfiguration {
                 .refreshTokenStorage(refreshTokenStorage)
                 .accessTokenStorage(accessTokenStorage)
                 .passwordEncoder(passwordEncoder)
+                .build();
+    }
+
+    @Bean
+    public JwtUserDetailsService jwtUserDetailsService(UsersService usersService) {
+        return new JwtUserDetailsService(usersService);
+    }
+
+    @Bean
+    public JwtAuthenticationConfigurer jwtAuthenticationConfigurer(
+            JwtUserDetailsService jwtUserDetailsService,
+            UnauthenticatedEntryPoint unauthenticatedEntryPoint,
+            BearerTokenStorage accessTokenStorage,
+            CookieTokenStorage refreshTokenStorage
+    ) {
+        return JwtAuthenticationConfigurer
+                .builder()
+                .authenticationEntryPoint(unauthenticatedEntryPoint)
+                .jwtUserDetailsService(jwtUserDetailsService)
+                .accessTokenStorage(accessTokenStorage)
+                .refreshTokenStorage(refreshTokenStorage)
                 .build();
     }
 }

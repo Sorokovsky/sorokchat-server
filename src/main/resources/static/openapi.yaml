@@ -120,10 +120,12 @@ paths:
                 $ref: "#/components/schemas/ProblemDetail"
   /authorization/profile:
     get:
+      security:
+        - bearerAuthorization: [ ]
       tags:
         - Авторизація
       summary: Авторизований користувач
-      description: Отримвання авторизованого користувача
+      description: Отримання авторизованого користувача
       operationId: profile
       responses:
         200:

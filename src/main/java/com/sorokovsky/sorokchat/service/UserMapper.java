@@ -61,6 +61,7 @@ public class UserMapper {
                         .stream()
                         .map(GrantedAuthority::getAuthority).filter(Objects::nonNull)
                         .filter(authority -> authority.startsWith("ROLE_"))
+                        .map(authority -> authority.substring("ROLE_".length()))
                         .toList()
         );
     }
