@@ -261,7 +261,6 @@ components:
     ProblemDetail:
       type: object
       description: Стандартний формат відповіді про помилку (RFC 9457).
-      required: true
       properties:
         type:
           type: string
