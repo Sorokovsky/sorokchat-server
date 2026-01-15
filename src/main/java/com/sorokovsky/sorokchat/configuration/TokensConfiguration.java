@@ -12,6 +12,8 @@ import com.sorokovsky.sorokchat.factory.DefaultAccessTokenFactory;
 import com.sorokovsky.sorokchat.factory.DefaultRefreshTokenFactory;
 import com.sorokovsky.sorokchat.serialization.JweTokenSerializer;
 import com.sorokovsky.sorokchat.serialization.JwsTokenSerializer;
+import com.sorokovsky.sorokchat.storage.BearerTokenStorage;
+import com.sorokovsky.sorokchat.storage.CookieTokenStorage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -73,6 +75,25 @@ public class TokensConfiguration {
         return DefaultRefreshTokenFactory
                 .builder()
                 .lifetime(lifetime)
+                .build();
+    }
+
+    @Bean
+    public BearerTokenStorage bearerTokenStorage(JwsTokenDeserializer deserializer, JwsTokenSerializer serializer) {
+        return BearerTokenStorage
+                .builder()
+                .deserializer(deserializer)
+                .serializer(serializer)
+                .build();
+    }
+
+    @Bean
+    public CookieTokenStorage cookieTokenStorage(JweTokenDeserializer deserializer, JweTokenSerializer serializer) {
+        return CookieTokenStorage
+                .builder()
+                .cookieName("__Host-refresh-token")
+                .deserializer(deserializer)
+                .serializer(serializer)
                 .build();
     }
 }
