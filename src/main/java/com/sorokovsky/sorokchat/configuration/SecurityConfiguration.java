@@ -80,7 +80,10 @@ public class SecurityConfiguration {
             JwtUserDetailsService jwtUserDetailsService,
             UnauthenticatedEntryPoint unauthenticatedEntryPoint,
             BearerTokenStorage accessTokenStorage,
-            CookieTokenStorage refreshTokenStorage
+            CookieTokenStorage refreshTokenStorage,
+            UsersService usersService,
+            DefaultAccessTokenFactory accessTokenFactory,
+            DefaultRefreshTokenFactory refreshTokenFactory
     ) {
         return JwtAuthenticationConfigurer
                 .builder()
@@ -88,6 +91,9 @@ public class SecurityConfiguration {
                 .jwtUserDetailsService(jwtUserDetailsService)
                 .accessTokenStorage(accessTokenStorage)
                 .refreshTokenStorage(refreshTokenStorage)
+                .usersService(usersService)
+                .accessTokenFactory(accessTokenFactory)
+                .refreshTokenFactory(refreshTokenFactory)
                 .build();
     }
 }
