@@ -147,6 +147,52 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ProblemDetail"
+  /chats/create:
+    post:
+      tags:
+        - Чати
+      summary: Створення
+      description: Створення чату
+      operationId: /chats/create
+      security:
+        - bearerAuthorization: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewChannelPayload"
+      responses:
+        204:
+          description: Успішно створено
+          headers:
+            Location:
+              description: Посилання на створеного чата
+              required: true
+              example: /chats/1
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetChatPayload"
+        401:
+          description: Неавторизований користувач
+          headers:
+            WWW-Authenticate:
+              required: true
+              schema:
+                type: string
+                description: Спосіб авторизації
+                example: Bearer
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+        400:
+          description: Некоректні данні
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
 components:
   securitySchemes:
     bearerAuthorization:
@@ -321,6 +367,33 @@ components:
         members:
           type: array
           description: Учасники чату
-          minItems: 2
+          minItems: 0
           items:
             $ref: "#/components/schemas/GetUserPayload"
+    NewChannelPayload:
+      type: object
+      description: Новий чат
+      required:
+        - name
+        - description
+      properties:
+        name:
+          type: string
+          description: Назва чату
+          default: Крутий чат
+        description:
+          type: string
+          description: Опис чату
+          default: Дуже крутий чат
+    UpdateChatPayload:
+      description: Оновлення чату
+      type: object
+      properties:
+        name:
+          type: string
+          description: Назва чату
+          default: Крутий чат
+        description:
+          type: string
+          description: Опис чату
+          default: Дуже крутий чат
