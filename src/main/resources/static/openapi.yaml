@@ -193,6 +193,37 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ProblemDetail"
+  /chats/by-me:
+    get:
+      tags:
+        - Чати
+      security:
+        - bearerAuthorization: [ ]
+      summary: Чати користувача
+      description: Отримати чати користувача
+      operationId: /chats/by-user
+      responses:
+        200:
+          description: Успішне отримання
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GetChatPayload"
+        401:
+          description: Неавторизований користувач
+          headers:
+            WWW-Authenticate:
+              required: true
+              schema:
+                type: string
+                description: Спосіб авторизації
+                example: Bearer
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
 components:
   securitySchemes:
     bearerAuthorization:
