@@ -23,7 +23,7 @@ public class AuthorizationController {
 
     @PostMapping("register")
     public ResponseEntity<GetUserPayload> register(
-            @Valid @RequestBody NewUserPayload payload,
+            @RequestBody @Valid NewUserPayload payload,
             HttpServletResponse response,
             UriComponentsBuilder uriBuilder
     ) {
@@ -35,7 +35,7 @@ public class AuthorizationController {
 
     @PostMapping("login")
     public ResponseEntity<GetUserPayload> login(
-            @Valid @RequestBody LoginPayload payload,
+            @RequestBody @Valid LoginPayload payload,
             HttpServletResponse response
     ) {
         return ResponseEntity.ok(mapper.toGet(service.login(payload, response)));
