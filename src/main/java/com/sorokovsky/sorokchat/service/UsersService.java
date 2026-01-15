@@ -6,6 +6,7 @@ import com.sorokovsky.sorokchat.model.Authority;
 import com.sorokovsky.sorokchat.model.UserModel;
 import com.sorokovsky.sorokchat.repository.UsersRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -54,7 +55,7 @@ public class UsersService implements UserDetailsService {
         user.setFirstName(newUser.firstName());
         user.setLastName(newUser.lastName());
         user.setMiddleName(newUser.middleName());
-        user.setAuthorities(new HashSet<>(List.of(Authority.ROLE_USER)));
+        user.setAuthorities(new HashSet<>(List.of(new SimpleGrantedAuthority(Authority.ROLE_USER.name()))));
         return mapper.toModel(repository.save(mapper.toEntity(user)));
     }
 

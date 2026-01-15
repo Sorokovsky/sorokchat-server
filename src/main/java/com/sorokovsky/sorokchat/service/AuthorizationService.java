@@ -8,10 +8,12 @@ import com.sorokovsky.sorokchat.factory.RefreshTokenFactory;
 import com.sorokovsky.sorokchat.model.UserModel;
 import com.sorokovsky.sorokchat.storage.TokenStorage;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @RequiredArgsConstructor
+@Builder
 public class AuthorizationService {
     private final AccessTokenFactory accessTokenFactory;
     private final RefreshTokenFactory refreshTokenFactory;

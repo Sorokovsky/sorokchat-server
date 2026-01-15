@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Set;
@@ -18,7 +19,7 @@ public class UserModel extends BaseModel implements UserDetails {
     private String firstName;
     private String lastName;
     private String middleName;
-    private Set<Authority> authorities;
+    private Set<GrantedAuthority> authorities;
 
     @Override
     public String getUsername() {

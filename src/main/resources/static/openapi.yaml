@@ -212,6 +212,7 @@ components:
         - firstName
         - lastName
         - middleName
+        - roles
       properties:
         id:
           type: integer
@@ -249,6 +250,12 @@ components:
           description: Побатькові користувача
           type: string
           example: Іванович
+        roles:
+          description: Ролі користувача
+          type: array
+          minItems: 1
+          items:
+            type: string
     ProblemDetail:
       type: object
       description: Стандартний формат відповіді про помилку (RFC 9457).
