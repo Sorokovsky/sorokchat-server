@@ -261,6 +261,7 @@ components:
     ProblemDetail:
       type: object
       description: Стандартний формат відповіді про помилку (RFC 9457).
+      required: true
       properties:
         type:
           type: string
@@ -285,3 +286,42 @@ components:
           description: URI-посилання на конкретне виникнення проблеми (наприклад, шлях запиту).
           example: /authorization/register
       additionalProperties: true
+    GetChatPayload:
+      description: Чат для отримання
+      type: object
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - name
+        - description
+        - members
+      properties:
+        id:
+          type: integer
+          default: Ідентифікатор чата
+          example: 1
+        createdAt:
+          type: string
+          description: Дата створення чата
+          format: timestamp
+          example: 14.01.2026T13:25
+        updatedAt:
+          type: string
+          description: Дата оновлення чата
+          format: timestamp
+          example: 14.01.2026T13:25
+        name:
+          type: string
+          description: Назва чату
+          example: Крутий чат
+        description:
+          type: string
+          description: Опис чату
+          example: Дуже крутий чат
+        members:
+          type: array
+          description: Учасники чату
+          minItems: 2
+          items:
+            $ref: "#/components/schemas/GetUserPayload"
