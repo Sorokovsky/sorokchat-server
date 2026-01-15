@@ -34,7 +34,7 @@ public class JwtRefreshFilter extends OncePerRequestFilter {
                 if (user != null) {
                     final var newRefreshToken = refreshTokenFactory.apply(user);
                     final var newAccessToken = accessTokenFactory.apply(newRefreshToken);
-                    refreshTokenStorage.setToken(refreshToken, response);
+                    refreshTokenStorage.setToken(newRefreshToken, response);
                     accessTokenStorage.setToken(newAccessToken, response);
                 }
             }
