@@ -1,5 +1,6 @@
 package com.sorokovsky.sorokchat.factory;
 
+import com.sorokovsky.sorokchat.model.Authority;
 import com.sorokovsky.sorokchat.model.Token;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,7 @@ public class DefaultRefreshTokenFactory implements RefreshTokenFactory {
                         userDetails.getAuthorities()
                                 .stream()
                                 .map(GrantedAuthority::getAuthority),
-                        Stream.of("JWT_REFRESH")
+                        Stream.of(Authority.JWT_REFRESH.name())
                 ).toList(),
                 now,
                 now.plus(lifetime)

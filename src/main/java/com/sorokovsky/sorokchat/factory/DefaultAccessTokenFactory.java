@@ -1,5 +1,6 @@
 package com.sorokovsky.sorokchat.factory;
 
+import com.sorokovsky.sorokchat.model.Authority;
 import com.sorokovsky.sorokchat.model.Token;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,12 @@ public class DefaultAccessTokenFactory implements AccessTokenFactory {
         return new Token(
                 token.id(),
                 token.email(),
-                Stream.concat(token.authorities().stream(), Stream.of("JWT_ACCESS", "JWT_LOGOUT")).toList(),
+                Stream.concat(token.authorities().stream()
+                                .filter(authority -> !authority.equals(Authority.JWT_REFRESH.name())),
+                        Stream.of(
+                                Authority.JWT_ACCESS.name(),
+                                Authority.JWT_LOGOUT.name()
+                        )).toList(),
                 now,
                 now.plus(lifetime)
         );

@@ -1,0 +1,38 @@
+package com.sorokovsky.sorokchat.service;
+
+import com.sorokovsky.sorokchat.entity.UserEntity;
+import com.sorokovsky.sorokchat.model.UserModel;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+@Service
+@RequiredArgsConstructor
+public class UserMapper {
+    public UserModel toModel(UserEntity entity) {
+        final var model = new UserModel();
+        model.setId(entity.getId());
+        model.setCreatedAt(entity.getCreatedAt());
+        model.setUpdatedAt(entity.getUpdatedAt());
+        model.setEmail(entity.getEmail());
+        model.setPassword(entity.getPassword());
+        model.setFirstName(entity.getFirstName());
+        model.setLastName(entity.getLastName());
+        model.setMiddleName(entity.getMiddleName());
+        model.setAuthorities(entity.getAuthorities());
+        return model;
+    }
+
+    public UserEntity toEntity(UserModel model) {
+        final var entity = new UserEntity();
+        entity.setId(model.getId());
+        entity.setCreatedAt(model.getCreatedAt());
+        entity.setUpdatedAt(model.getUpdatedAt());
+        entity.setEmail(model.getEmail());
+        entity.setPassword(model.getPassword());
+        entity.setFirstName(model.getFirstName());
+        entity.setLastName(model.getLastName());
+        entity.setMiddleName(model.getMiddleName());
+        entity.setAuthorities(model.getAuthorities());
+        return entity;
+    }
+}
