@@ -24,7 +24,8 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(
             HttpSecurity http,
-            JwtAuthenticationConfigurer jwtAuthenticationConfigurer
+            JwtAuthenticationConfigurer jwtAuthenticationConfigurer,
+            UnauthenticatedEntryPoint unauthenticatedEntryPoint
     ) {
         http
                 .authorizeHttpRequests(configurer -> configurer
@@ -36,6 +37,9 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(configurer -> configurer
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                .exceptionHandling(configurer -> configurer
+                        .authenticationEntryPoint(unauthenticatedEntryPoint)
                 );
         http.apply(jwtAuthenticationConfigurer);
         return http.build();
