@@ -2,6 +2,7 @@ package com.sorokovsky.sorokchat.service;
 
 import com.sorokovsky.sorokchat.contract.NewUserPayload;
 import com.sorokovsky.sorokchat.exception.user.UserAlreadyExists;
+import com.sorokovsky.sorokchat.mapper.UserMapper;
 import com.sorokovsky.sorokchat.model.Authority;
 import com.sorokovsky.sorokchat.model.UserModel;
 import com.sorokovsky.sorokchat.repository.UsersRepository;

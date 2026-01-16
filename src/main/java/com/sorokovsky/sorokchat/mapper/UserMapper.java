@@ -1,4 +1,4 @@
-package com.sorokovsky.sorokchat.service;
+package com.sorokovsky.sorokchat.mapper;
 
 import com.sorokovsky.sorokchat.contract.GetUserPayload;
 import com.sorokovsky.sorokchat.entity.UserEntity;
