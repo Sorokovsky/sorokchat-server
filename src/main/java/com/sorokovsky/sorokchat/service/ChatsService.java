@@ -30,6 +30,14 @@ public class ChatsService {
         return repository.findByName(name).map(mapper::toModel);
     }
 
+    @Transactional(readOnly = true)
+    public List<ChatModel> getAllByUser(UserModel user) {
+        return repository
+                .findAllByMembersId(user.getId())
+                .stream().map(mapper::toModel)
+                .toList();
+    }
+
     @Transactional
     public ChatModel create(CreateChatPayload payload, UserModel user) {
         final var now = Date.from(Instant.now());

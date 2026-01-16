@@ -9,12 +9,10 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -34,5 +32,14 @@ public class ChatsController {
         return ResponseEntity
                 .created(uriBuilder.replacePath("/chats/{id}").build(Map.of("id", chat.getId())))
                 .body(mapper.toGet(chat));
+    }
+
+    @GetMapping("by-me")
+    public ResponseEntity<List<GetChatPayload>> getAllByUser(@AuthenticationPrincipal UserModel user) {
+        return ResponseEntity.ok(service
+                .getAllByUser(user)
+                .stream().map(mapper::toGet)
+                .toList()
+        );
     }
 }
