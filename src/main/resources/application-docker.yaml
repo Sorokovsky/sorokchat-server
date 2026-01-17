@@ -5,7 +5,7 @@ spring:
     driver-class-name: org.postgresql.Driver
     username: postgres
     password: postgres
-    url: jdbc:postgresql://localhost:5432/sorokchat
+    url: jdbc:postgresql://sorokchat.database:5432/sorokchat
   jpa:
     hibernate:
       ddl-auto: update
