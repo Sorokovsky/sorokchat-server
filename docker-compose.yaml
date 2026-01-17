@@ -1,5 +1,16 @@
 name: sorokchat
 services:
+  sorokchat.server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sorokchat.server
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - sorokchat.database
   sorokchat.database:
     image: postgres:18-alpine
     container_name: sorokchat.database
