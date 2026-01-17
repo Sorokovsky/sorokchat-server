@@ -42,4 +42,10 @@ public class ChatsController {
                 .toList()
         );
     }
+
+    @DeleteMapping("{id:\\d++}")
+    public ResponseEntity<Void> deleteById(@PathVariable("id") Long id) {
+        service.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
 }

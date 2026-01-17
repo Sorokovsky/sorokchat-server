@@ -224,6 +224,36 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ProblemDetail"
+  /chats/{id}:
+    delete:
+      security:
+        - bearerAuthorization: [ ]
+      tags:
+        - Чати
+      summary: Видалення
+      description: Видалення чату
+      operationId: /chats/delete
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        204:
+          description: Успішне видалення
+        400:
+          description: Помилка у запиті
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+        401:
+          description: Неавторизований користувач
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
 components:
   securitySchemes:
     bearerAuthorization:
