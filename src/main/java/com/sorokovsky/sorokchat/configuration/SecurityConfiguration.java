@@ -1,8 +1,10 @@
 package com.sorokovsky.sorokchat.configuration;
 
 import com.sorokovsky.sorokchat.configurer.JwtAuthenticationConfigurer;
+import com.sorokovsky.sorokchat.deserialization.JwsTokenDeserializer;
 import com.sorokovsky.sorokchat.factory.DefaultAccessTokenFactory;
 import com.sorokovsky.sorokchat.factory.DefaultRefreshTokenFactory;
+import com.sorokovsky.sorokchat.interceptors.JwtChannelInterceptor;
 import com.sorokovsky.sorokchat.model.Authority;
 import com.sorokovsky.sorokchat.point.UnauthenticatedEntryPoint;
 import com.sorokovsky.sorokchat.service.AuthorizationService;
@@ -95,5 +97,10 @@ public class SecurityConfiguration {
                 .accessTokenFactory(accessTokenFactory)
                 .refreshTokenFactory(refreshTokenFactory)
                 .build();
+    }
+
+    @Bean
+    public JwtChannelInterceptor jwtChannelInterceptor(JwsTokenDeserializer deserializer) {
+        return new JwtChannelInterceptor(deserializer);
     }
 }

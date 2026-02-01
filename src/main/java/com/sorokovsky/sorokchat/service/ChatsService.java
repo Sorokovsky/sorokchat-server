@@ -1,6 +1,8 @@
 package com.sorokovsky.sorokchat.service;
 
 import com.sorokovsky.sorokchat.contract.CreateChatPayload;
+import com.sorokovsky.sorokchat.contract.MessagePayload;
+import com.sorokovsky.sorokchat.contract.NewMessagePayload;
 import com.sorokovsky.sorokchat.exception.chat.ChatNotFoundException;
 import com.sorokovsky.sorokchat.mapper.ChatMapper;
 import com.sorokovsky.sorokchat.model.ChatModel;
@@ -53,5 +55,11 @@ public class ChatsService {
     public void deleteById(long id) {
         getById(id).orElseThrow(ChatNotFoundException::new);
         repository.deleteById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public MessagePayload writeMessage(NewMessagePayload messagePayload, UserModel user, Long chatId) {
+        final var now = Date.from(Instant.now());
+        return new MessagePayload(now, now, messagePayload.text(), messagePayload.mac(), user.getId());
     }
 }
