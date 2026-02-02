@@ -7,6 +7,7 @@ public record MessagePayload(
         Date updatedAt,
         String text,
         String mac,
-        Long authorId
+        Long authorId,
+        Long chatId
 ) {
 }

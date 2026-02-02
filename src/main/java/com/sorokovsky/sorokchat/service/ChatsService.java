@@ -60,6 +60,6 @@ public class ChatsService {
     @Transactional(readOnly = true)
     public MessagePayload writeMessage(NewMessagePayload messagePayload, UserModel user, Long chatId) {
         final var now = Date.from(Instant.now());
-        return new MessagePayload(now, now, messagePayload.text(), messagePayload.mac(), user.getId());
+        return new MessagePayload(now, now, messagePayload.text(), messagePayload.mac(), user.getId(), chatId);
     }
 }
