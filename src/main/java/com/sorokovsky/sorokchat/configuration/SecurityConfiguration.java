@@ -31,6 +31,7 @@ public class SecurityConfiguration {
     ) {
         http
                 .authorizeHttpRequests(configurer -> configurer
+                        .requestMatchers("/ws/**").permitAll()
                         .requestMatchers("/swagger-ui/**", "/openapi.yaml", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/authorization/login", "/authorization/register").anonymous()
                         .requestMatchers("/authorization/logout").hasAuthority(Authority.JWT_LOGOUT.name())

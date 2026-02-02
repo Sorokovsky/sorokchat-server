@@ -4,6 +4,8 @@ import com.sorokovsky.sorokchat.deserialization.TokenDeserializer;
 import com.sorokovsky.sorokchat.exception.user.BadCredentialsException;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -15,21 +17,27 @@ import org.springframework.security.web.authentication.preauth.PreAuthenticatedA
 
 @RequiredArgsConstructor
 public class JwtChannelInterceptor implements ChannelInterceptor {
+    private static final Logger LOGGER = LoggerFactory.getLogger(JwtChannelInterceptor.class);
+
     private final TokenDeserializer deserializer;
 
     @Override
     public @Nullable Message<?> preSend(Message<?> message, MessageChannel channel) {
         final var accessor = StompHeaderAccessor.wrap(message);
+        LOGGER.info("Pre-Send: {}", accessor.getCommand());
         if (StompCommand.CONNECT.equals(accessor.getCommand())) {
             final var header = accessor.getFirstNativeHeader(HttpHeaders.AUTHORIZATION);
             final var bearerPrefix = "Bearer ";
             if (header == null || !header.startsWith(bearerPrefix)) {
+                LOGGER.debug("Authorization header is missing");
                 return null;
             }
             final var token = header.substring(bearerPrefix.length());
+            LOGGER.debug("ACCESS TOKEN: {}", token);
             try {
                 final var model = deserializer.apply(token)
                         .orElseThrow(BadCredentialsException::new);
+                LOGGER.debug("PARSED TOKEN: {}", model);
                 final var authorization = new PreAuthenticatedAuthenticationToken(model, model);
                 accessor.setUser(authorization);
                 SecurityContextHolder.getContext().setAuthentication(authorization);
