@@ -9,8 +9,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Controller;
+
+import java.util.Objects;
 
 @Controller()
 @RequiredArgsConstructor
@@ -22,8 +24,9 @@ public class MessagesController {
     public MessagePayload sendMessage(
             @DestinationVariable long chatId,
             @Valid NewMessagePayload newMessagePayload,
-            @AuthenticationPrincipal UserModel user
+            SimpMessageHeaderAccessor accessor
     ) {
+        final var user = (UserModel) Objects.requireNonNull(accessor.getSessionAttributes()).get("CURRENT_USER");
         return chatsService.writeMessage(newMessagePayload, user, chatId);
     }
 }
