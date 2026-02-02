@@ -101,7 +101,10 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public JwtChannelInterceptor jwtChannelInterceptor(JwsTokenDeserializer deserializer) {
-        return new JwtChannelInterceptor(deserializer);
+    public JwtChannelInterceptor jwtChannelInterceptor(
+            JwsTokenDeserializer deserializer,
+            UsersService usersService
+    ) {
+        return new JwtChannelInterceptor(deserializer, usersService);
     }
 }
