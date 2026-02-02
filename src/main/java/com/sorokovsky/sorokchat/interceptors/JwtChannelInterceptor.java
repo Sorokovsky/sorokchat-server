@@ -13,8 +13,8 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 
 @RequiredArgsConstructor
 public class JwtChannelInterceptor implements ChannelInterceptor {
@@ -35,14 +35,12 @@ public class JwtChannelInterceptor implements ChannelInterceptor {
                 throw new BadCredentialsException();
             }
             final var token = header.substring(bearerPrefix.length());
-            LOGGER.debug("ACCESS TOKEN: {}", token);
             try {
                 final var model = deserializer.apply(token)
                         .orElseThrow(BadCredentialsException::new);
                 final var user = usersService.getByEmail(model.email())
                         .orElseThrow(BadCredentialsException::new);
-                LOGGER.debug("PARSED TOKEN: {}", model);
-                final var authorization = new PreAuthenticatedAuthenticationToken(user, user, user.getAuthorities());
+                final var authorization = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
                 accessor.setUser(authorization);
                 SecurityContextHolder.getContext().setAuthentication(authorization);
             } catch (Exception exception) {
