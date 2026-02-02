@@ -73,9 +73,8 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
             MessageMatcherDelegatingAuthorizationManager.Builder messages
     ) {
         messages
-                .simpTypeMatchers(SimpMessageType.CONNECT).permitAll()
-                .simpDestMatchers("/app/**").authenticated()
-                .anyMessage().denyAll();
+                .simpTypeMatchers(SimpMessageType.CONNECT, SimpMessageType.DISCONNECT, SimpMessageType.HEARTBEAT).permitAll()
+                .simpDestMatchers("/app/**").authenticated();
         return messages.build();
     }
 }
