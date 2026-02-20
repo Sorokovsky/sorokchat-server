@@ -1,24 +1,5 @@
 spring:
-  application:
-    name: sorokchat
   datasource:
-    driver-class-name: org.postgresql.Driver
     username: postgres
     password: postgres
     url: jdbc:postgresql://sorokchat.database:5432/sorokchat
-  jpa:
-    hibernate:
-      ddl-auto: update
-springdoc:
-  swagger-ui:
-    urls:
-      - name: API
-        url: /openapi.yaml
-    disable-swagger-default-url: true
-tokens:
-  access:
-    lifetime: 15m
-    secret-key: '{"kty":"oct","k":"COlAdHmlpjs6vNscfaEIpnMquBy2HUeVYZgrLW7h0VQwvQpN1Xe1iixfS2UqJC7r"}'
-  refresh:
-    lifetime: 7d
-    secret-key: '{"kty":"oct","k":"1bRe3qVIqtgRHFYCf1cItv9qktUnLLXK"}'
