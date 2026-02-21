@@ -1,6 +1,7 @@
 package com.sorokovsky.sorokchat.service;
 
 import com.sorokovsky.sorokchat.contract.NewUserPayload;
+import com.sorokovsky.sorokchat.exception.user.CanNotContactWithSelfException;
 import com.sorokovsky.sorokchat.exception.user.UserAlreadyExists;
 import com.sorokovsky.sorokchat.exception.user.UserNotFoundException;
 import com.sorokovsky.sorokchat.mapper.UserMapper;
@@ -70,6 +71,7 @@ public class UsersService implements UserDetailsService {
 
     @Transactional
     public UserModel addToContact(UserModel user, String contactEmail) {
+        if (user.getEmail().equals(contactEmail)) throw new CanNotContactWithSelfException();
         final var candidate = repository.findByEmail(contactEmail).orElseThrow(UserNotFoundException::new);
         final var userEntity = repository.findById(user.getId()).orElseThrow(UserNotFoundException::new);
         if (!userEntity.getContacts().contains(candidate)) {

@@ -9,6 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -29,7 +30,7 @@ public class UserMapper {
                 .stream()
                 .map(authority -> new SimpleGrantedAuthority(authority.name()))
                 .collect(Collectors.toSet()));
-        model.setContacts(entity.getContacts().stream().map(this::toModel).collect(Collectors.toSet()));
+        model.setContacts(entity.getContacts() != null ? entity.getContacts().stream().map(this::toModel).collect(Collectors.toSet()) : new HashSet<>());
         return model;
     }
 
@@ -46,7 +47,7 @@ public class UserMapper {
         entity.setAuthorities(model.getAuthorities().stream()
                 .map(authority -> Authority.valueOf(authority.getAuthority()))
                 .collect(Collectors.toSet()));
-        entity.setContacts(model.getContacts().stream().map(this::toEntity).collect(Collectors.toSet()));
+        entity.setContacts(model.getContacts() != null ? model.getContacts().stream().map(this::toEntity).collect(Collectors.toSet()) : new HashSet<>());
         return entity;
     }
 

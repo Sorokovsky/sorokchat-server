@@ -101,7 +101,7 @@ paths:
       description: Вихід користувача із системи
       operationId: logout
       security:
-        - bearerAuthorization: []
+        - bearerAuthorization: [ ]
       responses:
         204:
           description: Успішний вихід
@@ -111,9 +111,9 @@ paths:
             WWW-Authenticate:
               required: true
               schema:
-                  type: string
-                  description: Спосіб авторизації
-                  example: Bearer
+                type: string
+                description: Спосіб авторизації
+                example: Bearer
           content:
             application/json:
               schema:
@@ -242,6 +242,74 @@ paths:
       responses:
         204:
           description: Успішне видалення
+        400:
+          description: Помилка у запиті
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+        401:
+          description: Неавторизований користувач
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+  /contacts/add-by-email/{email}:
+    post:
+      security:
+        - bearerAuthorization: [ ]
+      tags:
+        - Контакти
+      summary: Додавання контакту
+      description: Додавання контакту для користувача
+      operationId: contracts/add-by-email
+      parameters:
+        - in: path
+          name: email
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Успішне додавання контакту
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetUserPayload'
+        400:
+          description: Помилка у запиті
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+        401:
+          description: Неавторизований користувач
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+  /contacts/remove-by-id/{id}:
+    delete:
+      security:
+        - bearerAuthorization: [ ]
+      tags:
+        - Контакти
+      summary: Видалення контакту
+      description: Видалення контакту для користувача
+      operationId: contracts/remove-by-email
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Успішне додавання контакту
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetUserPayload'
         400:
           description: Помилка у запиті
           content:
