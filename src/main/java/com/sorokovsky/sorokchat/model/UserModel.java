@@ -20,6 +20,7 @@ public class UserModel extends BaseModel implements UserDetails {
     private String lastName;
     private String middleName;
     private Set<GrantedAuthority> authorities;
+    private Set<UserModel> contacts;
 
     @Override
     public String getUsername() {

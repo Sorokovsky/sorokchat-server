@@ -11,6 +11,7 @@ public record GetUserPayload(
         String firstName,
         String lastName,
         String middleName,
-        List<String> roles
+        List<String> roles,
+        List<GetUserPayload> contacts
 ) {
 }

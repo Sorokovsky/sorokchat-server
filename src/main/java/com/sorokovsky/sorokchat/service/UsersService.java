@@ -2,6 +2,7 @@ package com.sorokovsky.sorokchat.service;
 
 import com.sorokovsky.sorokchat.contract.NewUserPayload;
 import com.sorokovsky.sorokchat.exception.user.UserAlreadyExists;
+import com.sorokovsky.sorokchat.exception.user.UserNotFoundException;
 import com.sorokovsky.sorokchat.mapper.UserMapper;
 import com.sorokovsky.sorokchat.model.Authority;
 import com.sorokovsky.sorokchat.model.UserModel;
@@ -65,5 +66,29 @@ public class UsersService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return getByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("error.user.already.exists"));
+    }
+
+    @Transactional
+    public UserModel addToContact(UserModel user, String contactEmail) {
+        final var candidate = repository.findByEmail(contactEmail).orElseThrow(UserNotFoundException::new);
+        final var userEntity = repository.findById(user.getId()).orElseThrow(UserNotFoundException::new);
+        if (!userEntity.getContacts().contains(candidate)) {
+            userEntity.getContacts().add(candidate);
+            userEntity.setUpdatedAt(Date.from(Instant.now()));
+            return mapper.toModel(repository.save(userEntity));
+        }
+        return user;
+    }
+
+    @Transactional
+    public UserModel removeFromContact(UserModel user, Long contactId) {
+        final var userEntity = repository.findById(user.getId()).orElseThrow(UserNotFoundException::new);
+        final var candidate = repository.findById(contactId);
+        if (candidate.isPresent() && userEntity.getContacts().contains(candidate.get())) {
+            userEntity.getContacts().remove(candidate.get());
+            userEntity.setUpdatedAt(Date.from(Instant.now()));
+            return mapper.toModel(repository.save(userEntity));
+        }
+        return user;
     }
 }

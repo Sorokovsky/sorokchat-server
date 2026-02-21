@@ -365,6 +365,11 @@ components:
           minItems: 1
           items:
             type: string
+        contacts:
+          description: Контакти користувача
+          type: array
+          items:
+            $ref: '#/components/schemas/GetUserPayload'
     ProblemDetail:
       type: object
       description: Стандартний формат відповіді про помилку (RFC 9457).

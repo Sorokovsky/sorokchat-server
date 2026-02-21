@@ -40,7 +40,7 @@ public class ChatMapper {
                 model.getUpdatedAt(),
                 model.getName(),
                 model.getDescription(),
-                model.getMembers().stream().map(userMapper::toGet).toList()
+                model.getMembers().stream().map(member -> userMapper.toGet(member, false)).toList()
         );
     }
 }

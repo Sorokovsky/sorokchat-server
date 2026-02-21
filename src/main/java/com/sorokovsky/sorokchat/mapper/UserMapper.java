@@ -29,6 +29,7 @@ public class UserMapper {
                 .stream()
                 .map(authority -> new SimpleGrantedAuthority(authority.name()))
                 .collect(Collectors.toSet()));
+        model.setContacts(entity.getContacts().stream().map(this::toModel).collect(Collectors.toSet()));
         return model;
     }
 
@@ -45,10 +46,11 @@ public class UserMapper {
         entity.setAuthorities(model.getAuthorities().stream()
                 .map(authority -> Authority.valueOf(authority.getAuthority()))
                 .collect(Collectors.toSet()));
+        entity.setContacts(model.getContacts().stream().map(this::toEntity).collect(Collectors.toSet()));
         return entity;
     }
 
-    public GetUserPayload toGet(UserModel model) {
+    public GetUserPayload toGet(UserModel model, boolean withContacts) {
         return new GetUserPayload(
                 model.getId(),
                 model.getCreatedAt(),
@@ -62,7 +64,13 @@ public class UserMapper {
                         .map(GrantedAuthority::getAuthority).filter(Objects::nonNull)
                         .filter(authority -> authority.startsWith("ROLE_"))
                         .map(authority -> authority.substring("ROLE_".length()))
-                        .toList()
+                        .toList(),
+                withContacts ?
+                        model.getContacts()
+                                .stream()
+                                .map(contact -> this.toGet(contact, false))
+                                .collect(Collectors.toList()) :
+                        null
         );
     }
 }

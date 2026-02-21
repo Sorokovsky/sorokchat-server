@@ -30,7 +30,7 @@ public class AuthorizationController {
         final var user = service.register(payload, response);
         return ResponseEntity
                 .created(uriBuilder.replacePath("/authorization/profile").build().toUri())
-                .body(mapper.toGet(user));
+                .body(mapper.toGet(user, true));
     }
 
     @PostMapping("login")
@@ -38,7 +38,7 @@ public class AuthorizationController {
             @RequestBody @Valid LoginPayload payload,
             HttpServletResponse response
     ) {
-        return ResponseEntity.ok(mapper.toGet(service.login(payload, response)));
+        return ResponseEntity.ok(mapper.toGet(service.login(payload, response), true));
     }
 
     @DeleteMapping("logout")
@@ -49,6 +49,6 @@ public class AuthorizationController {
 
     @GetMapping("profile")
     public ResponseEntity<GetUserPayload> getProfile(@AuthenticationPrincipal UserModel user) {
-        return ResponseEntity.ok(mapper.toGet(user));
+        return ResponseEntity.ok(mapper.toGet(user, true));
     }
 }

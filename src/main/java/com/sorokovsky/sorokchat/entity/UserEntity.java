@@ -39,4 +39,16 @@ public class UserEntity extends BaseEntity {
     @ElementCollection(targetClass = Authority.class)
     @Column
     private Set<Authority> authorities = new HashSet<>();
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "user_contacts",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "contact_id"),
+            uniqueConstraints = @UniqueConstraint(
+                    name = "uk_user_contact",
+                    columnNames = {"user_id", "contact_id"}
+            )
+    )
+    private Set<UserEntity> contacts = new HashSet<>();
 }
