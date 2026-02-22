@@ -1,7 +1,6 @@
 package com.sorokovsky.sorokchat.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,7 +9,6 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class BaseModel {
     private Long id;
     private Date createdAt;
