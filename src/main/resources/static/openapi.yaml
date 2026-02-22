@@ -7,3 +7,121 @@ servers:
   - url: 'http://localhost:8080'
 
 paths:
+
+components:
+  securitySchemes:
+    bearerAuthorization:
+      type: http
+      scheme: bearer
+  schemas:
+    NewUserPayload:
+      type: object
+      description: Данні для створення користувача.
+      required:
+        - nickname
+        - displayName
+        - password
+      properties:
+        nickname:
+          type: string
+          description: Унікальне ім'я користувача.
+          example: sorokovsky-andrey
+        displayName:
+          type: string
+          description: Видиме ім'я користувача.
+          example: Сороковський Андрій
+        password:
+          type: string
+          description: Пароль користувача.
+          example: <PASSWORD>
+    UpdateUserPayload:
+      type: object
+      description: Данні для оновлення користувача.
+      properties:
+        nickname:
+          type: string
+          description: Унікальне ім'я користувача.
+          example: sorokovsky-andrey
+        displayName:
+          type: string
+          description: Видиме ім'я користувача.
+          example: Сороковський Андрій
+        password:
+          type: string
+          description: Пароль користувача.
+          example: <PASSWORD>
+        phoneNumber:
+          type: string
+          description: Номер телефону користувача.
+          example: +XXXXXXXXXXXXX
+        email:
+          type: string
+          description: Електронна адреса користувача.
+          format: email
+          example: support@example.com
+    GetUserPayload:
+      type: object
+      description: Данні для отримання користувача.
+      properties:
+        id:
+          type: integer
+          description: Ідентифікатор користувача
+          example: 1
+        createdAt:
+          type: string
+          format: timestamp
+          description: Дата створення користувача.
+          example: 14.01.2026T13:25
+        updatedAt:
+          type: string
+          description: Дата оновлення користувача.
+          format: timestamp
+          example: 14.01.2026T13:25
+        nickname:
+          type: string
+          description: Унікальне ім'я користувача.
+          example: sorokovsky-andrey
+        displayName:
+          type: string
+          description: Видиме ім'я користувача.
+          example: Сороковський Андрій
+        password:
+          type: string
+          description: Пароль користувача.
+          example: <PASSWORD>
+        phoneNumber:
+          type: string
+          description: Номер телефону користувача.
+          example: +XXXXXXXXXXXXX
+        email:
+          type: string
+          description: Електронна адреса користувача.
+          format: email
+          example: support@example.com
+    ProblemDetail:
+      type: object
+      description: Стандартний формат відповіді про помилку (RFC 9457).
+      properties:
+        type:
+          type: string
+          format: uri
+          description: URI-посилання, яке ідентифікує тип проблеми. Зазвичай вказує на документацію.
+          example: https://example.com/probs/out-of-stock
+        title:
+          type: string
+          description: Короткий, зрозумілий для людини опис типу проблеми.
+          example: Помилка реєстрації
+        status:
+          type: integer
+          description: HTTP-код статусу, згенерований сервером.
+          example: 400
+        detail:
+          type: string
+          description: Детальне пояснення конкретної помилки в поточному контексті.
+          example: Не коректна електронна адреса.
+        instance:
+          type: string
+          format: uri
+          description: URI-посилання на конкретне виникнення проблеми (наприклад, шлях запиту).
+          example: /authorization/register
+      additionalProperties: true
