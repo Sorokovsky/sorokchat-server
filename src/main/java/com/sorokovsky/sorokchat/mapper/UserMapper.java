@@ -1,8 +1,12 @@
 package com.sorokovsky.sorokchat.mapper;
 
 import com.sorokovsky.sorokchat.entity.UserEntity;
+import com.sorokovsky.sorokchat.model.Authority;
 import com.sorokovsky.sorokchat.model.UserModel;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
+
+import java.util.stream.Collectors;
 
 @Component
 public class UserMapper {
@@ -13,7 +17,10 @@ public class UserMapper {
                 .password(entity.getPassword())
                 .displayName(entity.getDisplayName())
                 .phoneNumber(entity.getPhoneNumber())
-                .authorities(entity.getAuthorities())
+                .authorities(entity.getAuthorities()
+                        .stream()
+                        .map(authority -> new SimpleGrantedAuthority(authority.name()))
+                        .collect(Collectors.toSet()))
                 .nickname(entity.getNickname())
                 .build();
         model.setId(entity.getId());
@@ -29,7 +36,10 @@ public class UserMapper {
                 .password(model.getPassword())
                 .displayName(model.getDisplayName())
                 .phoneNumber(model.getPhoneNumber())
-                .authorities(model.getAuthorities())
+                .authorities(model.getAuthorities()
+                        .stream()
+                        .map(authority -> Authority.valueOf(authority.getAuthority()))
+                        .collect(Collectors.toSet()))
                 .nickname(model.getNickname())
                 .build();
         entity.setId(model.getId());

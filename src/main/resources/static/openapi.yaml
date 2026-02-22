@@ -62,6 +62,15 @@ components:
     GetUserPayload:
       type: object
       description: Данні для отримання користувача.
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - nickname
+        - displayName
+        - password
+        - email
+        - phoneNumber
       properties:
         id:
           type: integer

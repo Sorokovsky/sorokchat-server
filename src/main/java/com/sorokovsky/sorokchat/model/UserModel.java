@@ -1,6 +1,7 @@
 package com.sorokovsky.sorokchat.model;
 
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Set;
@@ -16,7 +17,7 @@ public class UserModel extends BaseModel implements UserDetails {
     private String password;
     private String phoneNumber;
     private String email;
-    private Set<Authority> authorities;
+    private Set<GrantedAuthority> authorities;
 
     @Override
     public String getUsername() {
