@@ -1,9 +1,6 @@
 package com.sorokovsky.sorokchat.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Set;
 
@@ -11,6 +8,7 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class GroupEntity extends BaseModel {
     private String nickname;
     private String displayName;

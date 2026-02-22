@@ -7,14 +7,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserMapper {
     public UserModel toModel(UserEntity entity) {
-        final var model = new UserModel(
-                entity.getNickname(),
-                entity.getDisplayName(),
-                entity.getPassword(),
-                entity.getPhoneNumber(),
-                entity.getEmail(),
-                entity.getAuthorities()
-        );
+        final var model = UserModel
+                .builder()
+                .email(entity.getEmail())
+                .password(entity.getPassword())
+                .displayName(entity.getDisplayName())
+                .phoneNumber(entity.getPhoneNumber())
+                .authorities(entity.getAuthorities())
+                .nickname(entity.getNickname())
+                .build();
         model.setId(entity.getId());
         model.setUpdatedAt(entity.getUpdatedAt());
         model.setCreatedAt(entity.getCreatedAt());
@@ -22,14 +23,15 @@ public class UserMapper {
     }
 
     public UserEntity toEntity(UserModel model) {
-        final var entity = new UserEntity(
-                model.getNickname(),
-                model.getDisplayName(),
-                model.getPassword(),
-                model.getPhoneNumber(),
-                model.getEmail(),
-                model.getAuthorities()
-        );
+        final var entity = UserEntity
+                .builder()
+                .email(model.getEmail())
+                .password(model.getPassword())
+                .displayName(model.getDisplayName())
+                .phoneNumber(model.getPhoneNumber())
+                .authorities(model.getAuthorities())
+                .nickname(model.getNickname())
+                .build();
         entity.setId(model.getId());
         entity.setUpdatedAt(model.getUpdatedAt());
         entity.setCreatedAt(model.getCreatedAt());

@@ -1,10 +1,7 @@
 package com.sorokovsky.sorokchat.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Set;
 
@@ -12,6 +9,7 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity(name = "groups")
 public class GroupEntity extends BaseEntity {
     @Column(unique = true, nullable = false)
