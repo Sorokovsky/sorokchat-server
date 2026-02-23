@@ -2,14 +2,10 @@ package com.sorokovsky.sorokchat.deserializer;
 
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.sorokovsky.sorokchat.model.TokenModel;
-import lombok.Builder;
-import lombok.RequiredArgsConstructor;
 
 import java.text.ParseException;
 import java.util.UUID;
 
-@RequiredArgsConstructor
-@Builder
 public abstract class JwtTokenDeserializer implements TokenDeserializer {
     protected TokenModel extractTokenFromClaims(JWTClaimsSet claims) throws ParseException {
         return new TokenModel(
