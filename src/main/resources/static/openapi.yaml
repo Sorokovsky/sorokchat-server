@@ -7,7 +7,138 @@ servers:
   - url: 'http://localhost:8080'
 
 paths:
-
+  /authorization/register:
+    post:
+      operationId: /authrization/register
+      summary: Реєстрація
+      description: Реєстрація користувача у системі
+      tags:
+        - Авторизація
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewUserPayload'
+      responses:
+        201:
+          description: Успішна реєстрація
+          headers:
+            Location:
+              required: true
+              description: Посилання на себе
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizedPayload'
+        409:
+          description: Користувач вже існує
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        400:
+          description: Не коректні данні
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        403:
+          description: Вже авторизований користувач
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+  /authorization/login:
+    post:
+      tags:
+        - Авторизація
+      summary: Вхід
+      operationId: /authorization/login
+      description: Вхід користувача у системі.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginPayload'
+      responses:
+        200:
+          description: Успішний вхід
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizedPayload'
+        404:
+          description: Користувач не знайдений
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        400:
+          description: Не коректні данні
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        403:
+          description: Вже авторизований користувач
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+  /authorization/logout:
+    delete:
+      tags:
+        - Авторизація
+      summary: Вихід
+      description: Вихід користувача із системи
+      operationId: /authorization/logout
+      security:
+        - bearerAuthorization: [ ]
+      responses:
+        204:
+          description: Успішний вихід
+        401:
+          description: Неавторизований користувач
+          headers:
+            WWW-AUTHENTICATE:
+              required: true
+              description: Спосіб авторизації
+              schema:
+                type: string
+                example: Bearer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+  /authorization/profile:
+    get:
+      tags:
+        - Авторизація
+      summary: Профіль
+      description: Отримання даних про себе
+      operationId: /authorization/profile
+      security:
+        - bearerAuthorization: [ ]
+      responses:
+        200:
+          description: Успішно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetUserPayload'
+        401:
+          description: Неавторизований користувач
+          headers:
+            WWW-AUTHENTICATE:
+              required: true
+              description: Спосіб авторизації
+              schema:
+                type: string
+                example: Bearer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
 components:
   securitySchemes:
     bearerAuthorization:
@@ -30,6 +161,20 @@ components:
           type: string
           description: Видиме ім'я користувача.
           example: Сороковський Андрій
+        password:
+          type: string
+          description: Пароль користувача.
+          example: <PASSWORD>
+    LoginPayload:
+      description: Данні для входу
+      required:
+        - nickname
+        - password
+      properties:
+        nickname:
+          type: string
+          description: Унікальне ім'я користувача.
+          example: sorokovsky-andrey
         password:
           type: string
           description: Пароль користувача.
@@ -69,8 +214,6 @@ components:
         - nickname
         - displayName
         - password
-        - email
-        - phoneNumber
       properties:
         id:
           type: integer
@@ -134,3 +277,12 @@ components:
           description: URI-посилання на конкретне виникнення проблеми (наприклад, шлях запиту).
           example: /authorization/register
       additionalProperties: true
+    AuthorizedPayload:
+      description: Данні після авторизації.
+      required:
+        - accessToken
+      properties:
+        accessToken:
+          type: string
+          description: Токен доступу.
+          example: <JWS TOKEN>
