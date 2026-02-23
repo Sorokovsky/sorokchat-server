@@ -11,6 +11,8 @@ import com.sorokovsky.sorokchat.model.UserModel;
 import com.sorokovsky.sorokchat.repository.UsersRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +23,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class UsersService {
+public class UsersService implements UserDetailsService {
     private final UsersRepository repository;
     private final UserMapper mapper;
     private final PasswordEncoder passwordEncoder;
@@ -85,5 +87,11 @@ public class UsersService {
     @Transactional
     public void deleteById(Long id) {
         repository.deleteById(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public UserDetails loadUserByUsername(String username) {
+        return getByNickname(username).orElseThrow(UserNotFoundException::new);
     }
 }
