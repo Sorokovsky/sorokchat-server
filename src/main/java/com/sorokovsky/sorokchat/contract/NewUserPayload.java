@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Size;
 public record NewUserPayload(
         @NotNull(message = "{errors.user.nickname.null}")
         @NotBlank(message = "{errors.user.nickname.empty}")
-        String nickName,
+        String nickname,
 
         @NotNull(message = "{errors.user.display-name.null}")
         @NotNull(message = "{errors.user.display-name.empty}")

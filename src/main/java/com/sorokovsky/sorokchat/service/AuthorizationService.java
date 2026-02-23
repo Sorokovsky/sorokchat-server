@@ -18,18 +18,18 @@ public class AuthorizationService {
 
     public AuthorizedPayload register(NewUserPayload payload, HttpServletResponse response) {
         final var createdUser = usersService.create(payload);
-        return authorize(createdUser);
+        return authorize(createdUser, response);
     }
 
     public AuthorizedPayload login(LoginPayload payload, HttpServletResponse response) {
-        final var candidateResult = usersService.getByNickname(payload.nickName())
+        final var candidateResult = usersService.getByNickname(payload.nickname())
                 .orElseThrow(BadCredentialsException::new);
         if (!passwordEncoder.matches(payload.password(), candidateResult.getPassword()))
             throw new BadCredentialsException();
-        return authorize(candidateResult);
+        return authorize(candidateResult, response);
     }
 
-    private AuthorizedPayload authorize(UserModel user) {
+    private AuthorizedPayload authorize(UserModel user, HttpServletResponse response) {
         return new AuthorizedPayload(user.getNickname());
     }
 

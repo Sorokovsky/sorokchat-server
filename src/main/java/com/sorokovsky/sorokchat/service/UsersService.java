@@ -45,11 +45,11 @@ public class UsersService implements UserDetailsService {
 
     @Transactional
     public UserModel create(NewUserPayload payload) {
-        final var candidate = getByNickname(payload.nickName());
+        final var candidate = getByNickname(payload.nickname());
         if (candidate.isPresent()) throw new UserAlreadyExistsException();
         final var user = UserEntity
                 .builder()
-                .nickname(payload.nickName())
+                .nickname(payload.nickname())
                 .password(passwordEncoder.encode(payload.password()))
                 .displayName(payload.displayName())
                 .authorities(new HashSet<>(List.of(Authority.ROLE_USER)))
