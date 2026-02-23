@@ -1,5 +1,6 @@
 package com.sorokovsky.sorokchat.filter;
 
+import com.sorokovsky.sorokchat.contract.AuthorizedPayload;
 import com.sorokovsky.sorokchat.deserializer.TokenDeserializer;
 import com.sorokovsky.sorokchat.model.Authority;
 import com.sorokovsky.sorokchat.model.Cookies;
@@ -25,6 +26,7 @@ import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.temporal.ChronoUnit;
 
 @RequiredArgsConstructor
 @Builder
@@ -50,10 +52,21 @@ public class JwtRefreshFilter extends OncePerRequestFilter {
                 sendError(request, response);
                 return;
             }
-            final var userResult = usersService.getByNickname(refreshToken.subject());
-            if (userResult.isEmpty()) {
+            final var user = usersService.getByNickname(refreshToken.subject()).orElse(null);
+            if (user == null) {
                 sendError(request, response);
+                return;
             }
+            final var tokens = tokenService.generateTokens(user);
+            final var accessToken = tokens.accessToken();
+            final var newRefreshToken = tokens.refreshToken();
+            final var maxAge = (int) ChronoUnit.SECONDS.between(newRefreshToken.createdAt(), newRefreshToken.expiresAt());
+            cookieService.setCookie(Cookies.REFRESH_TOKEN, refreshTokenSerializer.apply(newRefreshToken), maxAge, response);
+            final var result = new AuthorizedPayload(accessTokenSerializer.apply(accessToken));
+            final var mapper = new ObjectMapper();
+            response.setStatus(HttpStatus.OK.value());
+            mapper.writeValue(response.getWriter(), result);
+            return;
         }
         filterChain.doFilter(request, response);
     }
@@ -68,6 +81,7 @@ public class JwtRefreshFilter extends OncePerRequestFilter {
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setCharacterEncoding(StandardCharsets.UTF_8);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        cookieService.clearCookie(Cookies.REFRESH_TOKEN, response);
         response.getWriter().write(mapper.writeValueAsString(details));
 
     }

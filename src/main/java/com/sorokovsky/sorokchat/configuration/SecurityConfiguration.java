@@ -1,11 +1,18 @@
 package com.sorokovsky.sorokchat.configuration;
 
 import com.sorokovsky.sorokchat.configurer.JwtConfigurer;
+import com.sorokovsky.sorokchat.deserializer.JweTokenDeserializer;
 import com.sorokovsky.sorokchat.deserializer.JwsTokenDeserializer;
 import com.sorokovsky.sorokchat.entrypoint.UnauthorizedEntryPoint;
+import com.sorokovsky.sorokchat.serializer.JweTokenSerializer;
+import com.sorokovsky.sorokchat.serializer.JwsTokenSerializer;
+import com.sorokovsky.sorokchat.service.CookieService;
+import com.sorokovsky.sorokchat.service.TokenService;
 import com.sorokovsky.sorokchat.service.TokenUserService;
+import com.sorokovsky.sorokchat.service.UsersService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -13,6 +20,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -71,13 +79,26 @@ public class SecurityConfiguration {
 
     @Bean
     public JwtConfigurer jwtConfigurer(
-            JwsTokenDeserializer deserializer,
-            UnauthorizedEntryPoint unauthorizedEntryPoint
+            JwsTokenDeserializer accessTokenDeserializer,
+            UnauthorizedEntryPoint unauthorizedEntryPoint,
+            JwsTokenSerializer accessTokenSerializer,
+            JweTokenSerializer refreshTokenSerializer,
+            JweTokenDeserializer refreshTokenDeserializer,
+            CookieService cookieService,
+            UsersService usersService,
+            TokenService tokenService
     ) {
         return JwtConfigurer
                 .builder()
-                .deserializer(deserializer)
+                .accessTokenDeserializer(accessTokenDeserializer)
                 .authenticationEntryPoint(unauthorizedEntryPoint)
+                .accessTokenSerializer(accessTokenSerializer)
+                .cookieService(cookieService)
+                .refreshMatcher(PathPatternRequestMatcher.pathPattern(HttpMethod.PUT, "/authorization/refresh-tokens"))
+                .refreshTokenSerializer(refreshTokenSerializer)
+                .refreshTokenDeserializer(refreshTokenDeserializer)
+                .usersService(usersService)
+                .tokenService(tokenService)
                 .build();
     }
 

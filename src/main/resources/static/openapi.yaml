@@ -139,6 +139,33 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetail'
+  /authorization/refresh-tokens:
+    put:
+      tags:
+        - Авторизація
+      operationId: /authorization/refresh-tokens
+      description: Оновлення токенів у системі.
+      summary: Оновлення токенів.
+      responses:
+        200:
+          description: Успішно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizedPayload'
+        401:
+          description: Неавторизований користувач
+          headers:
+            WWW-AUTHENTICATE:
+              required: true
+              description: Спосіб авторизації
+              schema:
+                type: string
+                example: Form
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
 components:
   securitySchemes:
     bearerAuthorization:
