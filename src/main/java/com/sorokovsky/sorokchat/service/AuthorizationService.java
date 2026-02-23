@@ -4,6 +4,7 @@ import com.sorokovsky.sorokchat.contract.AuthorizedPayload;
 import com.sorokovsky.sorokchat.contract.LoginPayload;
 import com.sorokovsky.sorokchat.contract.NewUserPayload;
 import com.sorokovsky.sorokchat.exception.authorization.BadCredentialsException;
+import com.sorokovsky.sorokchat.model.Cookies;
 import com.sorokovsky.sorokchat.model.UserModel;
 import com.sorokovsky.sorokchat.serializer.JweTokenSerializer;
 import com.sorokovsky.sorokchat.serializer.JwsTokenSerializer;
@@ -17,8 +18,6 @@ import java.time.temporal.ChronoUnit;
 @Service
 @RequiredArgsConstructor
 public class AuthorizationService {
-    private static final String REFRESH_COOKIE_NAME = "__Host-refresh-token";
-
     private final UsersService usersService;
     private final PasswordEncoder passwordEncoder;
     private final CookieService cookieService;
@@ -44,11 +43,11 @@ public class AuthorizationService {
         final var accessToken = tokens.accessToken();
         final var refreshToken = tokens.refreshToken();
         final var maxAge = (int) ChronoUnit.SECONDS.between(refreshToken.createdAt(), refreshToken.expiresAt());
-        cookieService.setCookie(REFRESH_COOKIE_NAME, jweTokenSerializer.apply(refreshToken), maxAge, response);
+        cookieService.setCookie(Cookies.REFRESH_TOKEN, jweTokenSerializer.apply(refreshToken), maxAge, response);
         return new AuthorizedPayload(jwsTokenSerializer.apply(accessToken));
     }
 
     public void logout(HttpServletResponse response) {
-        cookieService.clearCookie(REFRESH_COOKIE_NAME, response);
+        cookieService.clearCookie(Cookies.REFRESH_TOKEN, response);
     }
 }
