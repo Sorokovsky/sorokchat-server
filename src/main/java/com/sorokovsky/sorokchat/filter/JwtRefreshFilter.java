@@ -65,6 +65,7 @@ public class JwtRefreshFilter extends OncePerRequestFilter {
             final var result = new AuthorizedPayload(accessTokenSerializer.apply(accessToken));
             final var mapper = new ObjectMapper();
             response.setStatus(HttpStatus.OK.value());
+            response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
             mapper.writeValue(response.getWriter(), result);
             return;
         }
