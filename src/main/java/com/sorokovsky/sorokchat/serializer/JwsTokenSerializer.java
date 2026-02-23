@@ -5,13 +5,12 @@ import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jose.JWSSigner;
 import com.nimbusds.jwt.SignedJWT;
+import com.sorokovsky.sorokchat.exception.base.InternalServerException;
 import com.sorokovsky.sorokchat.model.TokenModel;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Builder
@@ -22,16 +21,16 @@ public class JwsTokenSerializer extends JwtTokenSerializer {
     private final JWSSigner signer;
 
     @Override
-    public Optional<String> apply(TokenModel token) {
+    public String apply(TokenModel token) {
         final var header = new JWSHeader.Builder(algorithm).keyID(token.id().toString()).build();
         final var claims = getClaimsFromToken(token);
         final var signed = new SignedJWT(header, claims);
         try {
             signed.sign(signer);
-            return Optional.ofNullable(signed.serialize());
+            return signed.serialize();
         } catch (JOSEException exception) {
             LOGGER.error(exception.getMessage(), exception);
-            return Optional.empty();
+            throw new InternalServerException(exception);
         }
     }
 }

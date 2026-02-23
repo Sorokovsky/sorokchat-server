@@ -5,23 +5,19 @@ import com.sorokovsky.sorokchat.factory.RefreshTokenFactory;
 import com.sorokovsky.sorokchat.model.TokenModel;
 import com.sorokovsky.sorokchat.model.TokensModel;
 import com.sorokovsky.sorokchat.model.UserModel;
-import com.sorokovsky.sorokchat.serializer.JweTokenSerializer;
-import com.sorokovsky.sorokchat.serializer.JwsTokenSerializer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class TokenService {
-    private final JwsTokenSerializer jwsTokenSerializer;
-    private final JweTokenSerializer jweTokenSerializer;
     private final AccessTokenFactory accessTokenFactory;
     private final RefreshTokenFactory refreshTokenFactory;
 
     public TokensModel generateTokens(UserModel user) {
         final var refreshToken = generateRefreshToken(user);
         final var accessToken = generateAccessToken(refreshToken);
-        return new TokensModel(jwsTokenSerializer.apply(accessToken).orElseThrow(), jweTokenSerializer.apply(refreshToken).orElseThrow());
+        return new TokensModel(accessToken, refreshToken);
     }
 
     private TokenModel generateRefreshToken(UserModel user) {

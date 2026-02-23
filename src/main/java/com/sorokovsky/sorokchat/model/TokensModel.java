@@ -1,4 +1,4 @@
 package com.sorokovsky.sorokchat.model;
 
-public record TokensModel(String accessToken, String refreshToken) {
+public record TokensModel(TokenModel accessToken, TokenModel refreshToken) {
 }
