@@ -166,6 +166,52 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetail'
+  /users:
+    patch:
+      tags:
+        - Користувачі
+      operationId: users/id
+      summary: Оновлення себе.
+      description: Оновлення даних користувача у системі.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserPayload'
+      security:
+        - bearerAuthorization: [ ]
+      responses:
+        200:
+          description: Успішне оновлення
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetUserPayload'
+        401:
+          description: Неавторизований користувач
+          headers:
+            WWW-AUTHENTICATE:
+              required: true
+              description: Спосіб авторизації
+              schema:
+                type: string
+                example: Form
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        409:
+          description: Унікальні данні конфліктують з іншими користувачами.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        400:
+          description: Некоректні данні
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
 components:
   securitySchemes:
     bearerAuthorization:
