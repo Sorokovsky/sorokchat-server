@@ -1,11 +1,13 @@
 package com.sorokovsky.sorokchat.mapper;
 
+import com.sorokovsky.sorokchat.contract.GetUserPayload;
 import com.sorokovsky.sorokchat.entity.UserEntity;
 import com.sorokovsky.sorokchat.model.Authority;
 import com.sorokovsky.sorokchat.model.UserModel;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -46,5 +48,17 @@ public class UserMapper {
         entity.setUpdatedAt(model.getUpdatedAt());
         entity.setCreatedAt(model.getCreatedAt());
         return entity;
+    }
+
+    public GetUserPayload toGet(UserModel model) {
+        return new GetUserPayload(
+                model.getId(),
+                model.getCreatedAt(),
+                model.getUpdatedAt(),
+                model.getNickname(),
+                model.getDisplayName(),
+                Optional.ofNullable(model.getEmail()),
+                Optional.ofNullable(model.getPhoneNumber())
+        );
     }
 }
