@@ -26,6 +26,7 @@ paths:
             Location:
               required: true
               description: Посилання на себе
+              example: /authorization/profile
           content:
             application/json:
               schema:
@@ -154,11 +155,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/AuthorizedPayload'
         401:
-          description: Неавторизований користувач
+          description: Неавторизований користувач.
           headers:
             WWW-AUTHENTICATE:
               required: true
-              description: Спосіб авторизації
+              description: Спосіб авторизації.
               schema:
                 type: string
                 example: Form
@@ -188,11 +189,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/GetUserPayload'
         401:
-          description: Неавторизований користувач
+          description: Неавторизований користувач.
           headers:
             WWW-AUTHENTICATE:
               required: true
-              description: Спосіб авторизації
+              description: Спосіб авторизації.
               schema:
                 type: string
                 example: Form
@@ -207,7 +208,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProblemDetail'
         400:
-          description: Некоректні данні
+          description: Некоректні данні.
           content:
             application/json:
               schema:
@@ -224,11 +225,11 @@ paths:
         204:
           description: Успішне видалення
         401:
-          description: Неавторизований користувач
+          description: Неавторизований користувач.
           headers:
             WWW-AUTHENTICATE:
               required: true
-              description: Спосіб авторизації
+              description: Спосіб авторизації.
               schema:
                 type: string
                 example: Form
@@ -251,6 +252,8 @@ paths:
           required: true
           schema:
             type: string
+            description: Фільтр для пошуку. Необов'язкове співпадіння.
+            example: "@sorokovsky-andrey || Сороковський"
       responses:
         200:
           description: Успішний пошук.
@@ -261,11 +264,11 @@ paths:
                 items:
                   $ref: '#/components/schemas/GetUserPayload'
         401:
-          description: Неавторизований користувач
+          description: Неавторизований користувач.
           headers:
             WWW-AUTHENTICATE:
               required: true
-              description: Спосіб авторизації
+              description: Спосіб авторизації.
               schema:
                 type: string
                 example: Form
@@ -274,7 +277,135 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProblemDetail'
         404:
-          description: Користувач не знайдений
+          description: Користувач не знайдений.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+  /contacts/create/{userNickname}:
+    post:
+      tags:
+        - Контакти
+      summary: Створення контакту.
+      description: Створення контакту у системі для 2-х користувачів.
+      operationId: /contacts/create
+      parameters:
+        - in: path
+          name: userNickname
+          required: true
+          schema:
+            type: string
+            description: Унікальне ім'я користувача. Співпадіння обов'язкове.
+            example: sorokovsky-andrey
+      security:
+        - bearerAuthorization: [ ]
+      responses:
+        201:
+          description: Успішне створення контакту.
+          headers:
+            Location:
+              required: true
+              description: Посилання на створений контакт.
+              example: /contacts/1
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizedPayload'
+        401:
+          description: Неавторизований користувач.
+          headers:
+            WWW-AUTHENTICATE:
+              required: true
+              description: Спосіб авторизації.
+              schema:
+                type: string
+                example: Form
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        404:
+          description: Користувач не знайдений.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+  /contacts/{term}:
+    get:
+      tags:
+        - Контакти
+      operationId: /contacts/get-one
+      summary: Контакт.
+      description: Отримання одного контакту.
+      parameters:
+        - in: path
+          name: term
+          schema:
+            type: string
+            description: Данні для пошуку контакту по унікальному імені. Співпадіння необов'язкова.
+            example: "@sor || Сороковський"
+      responses:
+        200:
+          description: Успішне отримання.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetContactPayload'
+        401:
+          description: Неавторизований користувач.
+          headers:
+            WWW-AUTHENTICATE:
+              required: true
+              description: Спосіб авторизації.
+              schema:
+                type: string
+                example: Form
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        404:
+          description: Користувач не знайдений.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+  /contacts/{id}:
+    get:
+      summary: Контакти користувача.
+      operationId: contacts/id
+      tags:
+        - Контакти
+      parameters:
+        - in: path
+          name: id
+          description: Унікальний ідентифікатор користувача.
+          required: true
+          schema:
+            type: string
+            example: 1
+      responses:
+        200:
+          description: Успішне отримання.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetContactPayload'
+        401:
+          description: Неавторизований користувач.
+          headers:
+            WWW-AUTHENTICATE:
+              required: true
+              description: Спосіб авторизації.
+              schema:
+                type: string
+                example: Form
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        404:
+          description: Користувач не знайдений.
           content:
             application/json:
               schema:
@@ -390,6 +521,34 @@ components:
           description: Електронна адреса користувача.
           format: email
           example: support@example.com
+    GetContactPayload:
+      type: object
+      description: Данні для отримання користувача.
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - firstUser
+        - secondUser
+      properties:
+        id:
+          type: integer
+          description: Ідентифікатор контакту.
+          example: 1
+        createdAt:
+          type: string
+          format: timestamp
+          description: Дата створення контакту.
+          example: 14.01.2026T13:25
+        updatedAt:
+          type: string
+          description: Дата оновлення контакту.
+          format: timestamp
+          example: 14.01.2026T13:25
+        firstUser:
+          $ref: '#/components/schemas/GetUserPayload'
+        secondUser:
+          $ref: '#/components/schemas/GetUserPayload'
     ProblemDetail:
       type: object
       description: Стандартний формат відповіді про помилку (RFC 9457).

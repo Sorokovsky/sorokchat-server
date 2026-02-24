@@ -1,5 +1,6 @@
 package com.sorokovsky.sorokchat.mapper;
 
+import com.sorokovsky.sorokchat.contract.GetContactPayload;
 import com.sorokovsky.sorokchat.entity.ContactEntity;
 import com.sorokovsky.sorokchat.model.ContactModel;
 import lombok.RequiredArgsConstructor;
@@ -32,5 +33,15 @@ public class ContactMapper {
         model.setCreatedAt(entity.getCreatedAt());
         model.setUpdatedAt(entity.getUpdatedAt());
         return model;
+    }
+
+    public GetContactPayload toGet(ContactModel model) {
+        return new GetContactPayload(
+                model.getId(),
+                model.getCreatedAt(),
+                model.getUpdatedAt(),
+                userMapper.toGet(model.getFirstUser()),
+                userMapper.toGet(model.getSecondUser())
+        );
     }
 }
