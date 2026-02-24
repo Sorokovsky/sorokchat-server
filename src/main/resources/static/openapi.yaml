@@ -326,6 +326,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetail'
+        400:
+          description: Некоректні данні.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        409:
+          description: Конфлікти унікальних значень.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
   /contacts/by-user/{term}:
     get:
       tags:
@@ -400,6 +412,228 @@ paths:
                 $ref: '#/components/schemas/ProblemDetail'
         404:
           description: Користувач не знайдений.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+  /groups:
+    post:
+      tags:
+        - Групи
+      summary: Створення групи.
+      operationId: /groups/create
+      description: Створення групи у системі.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewGroupPayload'
+      security:
+        - bearerAuthorization: [ ]
+      responses:
+        201:
+          description: Успішне створення групи.
+          headers:
+            Location:
+              required: true
+              description: Посилання на створену групу.
+              example: /groups/1
+        401:
+          description: Неавторизований користувач.
+          headers:
+            WWW-AUTHENTICATE:
+              required: true
+              description: Спосіб авторизації.
+              schema:
+                type: string
+                example: Form
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        404:
+          description: Користувач не знайдений.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        400:
+          description: Некоректні данні.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        409:
+          description: Конфлікт унікальних значень.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+  /groups/my:
+    get:
+      tags:
+        - Групи
+      summary: Отримання своїх груп.
+      operationId: /groups/my
+      description: Отримання груп користувача.
+      security:
+        - bearerAuthorization: [ ]
+      responses:
+        200:
+          description: Успішне отримання.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GetGroupPayload'
+        401:
+          description: Неавторизований користувач.
+          headers:
+            WWW-AUTHENTICATE:
+              required: true
+              description: Спосіб авторизації.
+              schema:
+                type: string
+                example: Form
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+  /groups/by-term/{term}:
+    get:
+      security:
+        - bearerAuthorization: [ ]
+      tags:
+        - Групи
+      operationId: /groups/by-term
+      summary: Пошук групи.
+      description: Пошук групи за фільтром
+      parameters:
+        - in: path
+          name: term
+          required: true
+          description: Фільтр
+          schema:
+            type: string
+      responses:
+        200:
+          description: Успішне отримання.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GetGroupPayload'
+        401:
+          description: Неавторизований користувач.
+          headers:
+            WWW-AUTHENTICATE:
+              required: true
+              description: Спосіб авторизації.
+              schema:
+                type: string
+                example: Form
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        404:
+          description: Групу не знайдено.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+  /groups/by-id/{id}:
+    patch:
+      tags:
+        - Групи
+      operationId: /groups/update
+      summary: Оновлення групи.
+      description: Оновлення групи у системі.
+      security:
+        - bearerAuthorization: [ ]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateGroupPayload'
+      responses:
+        200:
+          description: Успішні зміни
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetGroupPayload'
+        400:
+          description: Некоректні данні.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        401:
+          description: Неавторизований користувач.
+          headers:
+            WWW-AUTHENTICATE:
+              required: true
+              description: Спосіб авторизації.
+              schema:
+                type: string
+                example: Form
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        404:
+          description: Групу не знайдено.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        409:
+          description: Конфлікт унікальних значень.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+    delete:
+      security:
+        - bearerAuthorization: [ ]
+      tags:
+        - Групи
+      summary: Видалення групи.
+      description: Видалення групи у системі.
+      operationId: /groups/delete
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        204:
+          description: Успішне видалення.
+        401:
+          description: Неавторизований користувач.
+          headers:
+            WWW-AUTHENTICATE:
+              required: true
+              description: Спосіб авторизації.
+              schema:
+                type: string
+                example: Form
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        404:
+          description: Групу не знайдено.
           content:
             application/json:
               schema:
@@ -579,3 +813,85 @@ components:
           type: string
           description: Токен доступу.
           example: <JWS TOKEN>
+    GetGroupPayload:
+      description: Данні групи користувачів.
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - nickname
+        - displayName
+        - addedMembers
+      properties:
+        id:
+          type: integer
+          description: Ідентифікатор групи.
+          example: 1
+        createdAt:
+          type: string
+          format: timestamp
+          description: Дата створення групи.
+          example: 14.01.2026T13:25
+        updatedAt:
+          type: string
+          description: Дата оновлення групи.
+          format: timestamp
+          example: 14.01.2026T13:25
+        nickname:
+          type: string
+          description: Унікальне ім'я групи.
+          example: great-group
+        displayName:
+          type: string
+          description: Видиме ім'я групи.
+          example: Чудова група
+        description:
+          type: string
+          description: Опис групи.
+          example: Дуже важлива група.
+        members:
+          type: array
+          description: Учасники групи.
+          minLength: 1
+          items:
+            $ref: '#/components/schemas/GetUserPayload'
+    NewGroupPayload:
+      description: Данні для нової групи користувачів.
+      required:
+        - nickname
+        - displayName
+        - addedMembers
+      properties:
+        nickname:
+          type: string
+          description: Унікальне ім'я групи.
+          example: great-group
+        displayName:
+          type: string
+          description: Видиме ім'я групи.
+          example: Чудова група
+        description:
+          type: string
+          description: Опис групи.
+          example: Дуже важлива група.
+        addedMembers:
+          type: array
+          description: Учасники групи,яких треба дадати у групи.
+          minLength: 1
+          items:
+            type: integer
+    UpdateGroupPayload:
+      description: Данні для оновлення групи.
+      properties:
+        nickname:
+          type: string
+          description: Унікальне ім'я групи.
+          example: great-group
+        displayName:
+          type: string
+          description: Видиме ім'я групи.
+          example: Чудова група
+        description:
+          type: string
+          description: Опис групи.
+          example: Дуже важлива група.
