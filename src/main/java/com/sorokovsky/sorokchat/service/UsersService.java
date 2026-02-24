@@ -44,6 +44,16 @@ public class UsersService implements UserDetailsService {
         return repository.findAllByDisplayName(displayName).stream().map(mapper::toModel).toList();
     }
 
+    @Transactional(readOnly = true)
+    public Optional<UserModel> getByNicknamePartial(String nickname) {
+        return repository.findByNicknameLikeIgnoreCase(nickname).map(mapper::toModel);
+    }
+
+    @Transactional(readOnly = true)
+    public List<UserModel> getByDisplayNamePartial(String displayName) {
+        return repository.findAllByDisplayNameLikeIgnoreCase(displayName).stream().map(mapper::toModel).toList();
+    }
+
     @Transactional
     public UserModel create(NewUserPayload payload) {
         final var candidate = getByNickname(payload.nickname());
@@ -65,18 +75,18 @@ public class UsersService implements UserDetailsService {
     @Transactional
     public UserModel update(Long id, UpdateUserPayload payload) {
         final var user = repository.findById(id).orElseThrow(UserNotFoundException::new);
-        if (payload.displayName() != null) user.setDisplayName(payload.displayName());
-        if (payload.password() != null) user.setPassword(passwordEncoder.encode(payload.password()));
-        if (payload.phoneNumber() != null) user.setPhoneNumber(payload.phoneNumber());
-        if (payload.nickname() != null) {
-            if (repository.existsByNickname(payload.nickname()) && !user.getNickname().equals(payload.nickname()))
+        if (payload.displayName().isPresent()) user.setDisplayName(payload.displayName().get());
+        if (payload.password().isPresent()) user.setPassword(passwordEncoder.encode(payload.password().get()));
+        if (payload.phoneNumber().isPresent()) user.setPhoneNumber(payload.phoneNumber().get());
+        if (payload.nickname().isPresent()) {
+            if (repository.existsByNickname(payload.nickname().get()) && !user.getNickname().equals(payload.nickname().get()))
                 throw new UserAlreadyExistsException();
-            user.setNickname(payload.nickname());
+            user.setNickname(payload.nickname().get());
         }
-        if (payload.email() != null) {
-            if (repository.existsByEmail(payload.email()) && !user.getEmail().equals(payload.email()))
+        if (payload.email().isPresent()) {
+            if (repository.existsByEmail(payload.email().get()) && !user.getEmail().equals(payload.email().get()))
                 throw new UserAlreadyExistsException();
-            user.setEmail(payload.email());
+            user.setEmail(payload.email().get());
         }
         try {
             return mapper.toModel(repository.save(user));

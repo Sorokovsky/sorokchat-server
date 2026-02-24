@@ -9,6 +9,8 @@ import java.util.Optional;
 
 @Repository
 public interface UsersRepository extends CrudRepository<UserEntity, Long> {
+    Optional<UserEntity> findByNicknameLikeIgnoreCase(String nickname);
+
     Optional<UserEntity> findByNickname(String nickname);
 
     boolean existsByNickname(String nickname);
@@ -18,6 +20,8 @@ public interface UsersRepository extends CrudRepository<UserEntity, Long> {
     boolean existsByPhoneNumber(String phoneNumber);
 
     Optional<UserEntity> findById(Long id);
+
+    List<UserEntity> findAllByDisplayNameLikeIgnoreCase(String displayName);
 
     List<UserEntity> findAllByDisplayName(String displayName);
 

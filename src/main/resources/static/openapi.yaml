@@ -170,7 +170,7 @@ paths:
     patch:
       tags:
         - Користувачі
-      operationId: users/id
+      operationId: users/patch
       summary: Оновлення себе.
       description: Оновлення даних користувача у системі.
       requestBody:
@@ -208,6 +208,73 @@ paths:
                 $ref: '#/components/schemas/ProblemDetail'
         400:
           description: Некоректні данні
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+    delete:
+      tags:
+        - Користувачі
+      security:
+        - bearerAuthorization: [ ]
+      summary: Видалення.
+      description: Видалення користувачів із системи.
+      operationId: /users/delete
+      responses:
+        204:
+          description: Успішне видалення
+        401:
+          description: Неавторизований користувач
+          headers:
+            WWW-AUTHENTICATE:
+              required: true
+              description: Спосіб авторизації
+              schema:
+                type: string
+                example: Form
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+  /users/{term}:
+    get:
+      tags:
+        - Користувачі
+      summary: Пошук користувача.
+      description: Пошук користувача у системі.
+      operationId: /users/term
+      security:
+        - bearerAuthorization: [ ]
+      parameters:
+        - name: term
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Успішний пошук.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GetUserPayload'
+        401:
+          description: Неавторизований користувач
+          headers:
+            WWW-AUTHENTICATE:
+              required: true
+              description: Спосіб авторизації
+              schema:
+                type: string
+                example: Form
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        404:
+          description: Користувач не знайдений
           content:
             application/json:
               schema:

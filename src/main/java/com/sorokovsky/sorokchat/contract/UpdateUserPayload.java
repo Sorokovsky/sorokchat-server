@@ -1,25 +1,20 @@
 package com.sorokovsky.sorokchat.contract;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+
+import java.util.Optional;
 
 public record UpdateUserPayload(
-        @NotBlank(message = "{errors.user.nickname.empty}")
-        String nickname,
+        Optional<String> nickname,
 
-        @NotNull(message = "{errors.user.display-name.empty}")
-        String displayName,
+        Optional<String> displayName,
 
-        @NotNull(message = "{errors.user.password.empty}")
-        @Size(min = 6, max = 32, message = "{errors.user.password.size}")
-        String password,
+        Optional<@Size(min = 6, max = 32, message = "{errors.user.password.size}") String> password,
 
-        @Pattern(
-                regexp = "^\\+?[1-9]\\d{6,14}$",
-                message = "{errors.user.phone.invalid}"
-        )
-        String phoneNumber,
+        Optional<@Pattern(regexp = "^\\+?[1-9]\\d{6,14}$", message = "{errors.user.phone.invalid}") String> phoneNumber,
 
-        @Email(message = "{errors.user.email.invalid}")
-        String email
+        Optional<@Email(message = "{errors.user.email.invalid}") String> email
 ) {
 }
