@@ -2,10 +2,10 @@ package com.sorokovsky.sorokchat.controller;
 
 import com.sorokovsky.sorokchat.contract.GetUserPayload;
 import com.sorokovsky.sorokchat.contract.UpdateUserPayload;
-import com.sorokovsky.sorokchat.exception.user.UserNotFoundException;
 import com.sorokovsky.sorokchat.mapper.UserMapper;
 import com.sorokovsky.sorokchat.model.UserModel;
 import com.sorokovsky.sorokchat.service.UsersService;
+import com.sorokovsky.sorokchat.utils.Nickname;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,11 +23,8 @@ public class UsersController {
 
     @GetMapping("{term}")
     public ResponseEntity<List<GetUserPayload>> findUsers(@PathVariable String term) {
-        if (term.startsWith("@")) {
-            if (term.length() == 1) throw new UserNotFoundException();
-            final var user = service.getByNicknamePartial(term.replaceFirst("@", "")).orElse(null);
-            if (user == null) throw new UserNotFoundException();
-            return ResponseEntity.ok(List.of(mapper.toGet(user)));
+        if (Nickname.isNickname(term)) {
+            return ResponseEntity.ok(service.getByNicknamePartial(Nickname.asTerm(term)).stream().map(mapper::toGet).toList());
         } else {
             return ResponseEntity.ok(service.getByDisplayNamePartial(term).stream().map(mapper::toGet).toList());
         }

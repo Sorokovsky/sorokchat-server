@@ -307,10 +307,6 @@ paths:
               required: true
               description: Посилання на створений контакт.
               example: /contacts/1
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AuthorizedPayload'
         401:
           description: Неавторизований користувач.
           headers:
@@ -330,13 +326,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetail'
-  /contacts/{term}:
+  /contacts/by-user/{term}:
     get:
       tags:
         - Контакти
       operationId: /contacts/get-one
       summary: Контакт.
       description: Отримання одного контакту.
+      security:
+        - bearerAuthorization: [ ]
       parameters:
         - in: path
           name: term
@@ -370,27 +368,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetail'
-  /contacts/{id}:
+  /contacts/my:
     get:
       summary: Контакти користувача.
-      operationId: contacts/id
+      operationId: contacts/userId
+      security:
+        - bearerAuthorization: [ ]
       tags:
         - Контакти
-      parameters:
-        - in: path
-          name: id
-          description: Унікальний ідентифікатор користувача.
-          required: true
-          schema:
-            type: string
-            example: 1
       responses:
         200:
           description: Успішне отримання.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GetContactPayload'
+                type: array
+                items:
+                  $ref: '#/components/schemas/GetContactPayload'
         401:
           description: Неавторизований користувач.
           headers:

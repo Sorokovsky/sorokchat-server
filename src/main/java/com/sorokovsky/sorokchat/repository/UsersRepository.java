@@ -15,7 +15,7 @@ public interface UsersRepository extends JpaRepository<UserEntity, Long> {
                     SELECT user FROM UserEntity user
                     WHERE LOWER(user.nickname) LIKE LOWER(CONCAT("%", :nickname, "%"))
             """)
-    Optional<UserEntity> findByNicknameLikeIgnoreCase(@Param("nickname") String nickname);
+    List<UserEntity> findByNicknameLikeIgnoreCase(@Param("nickname") String nickname);
 
     Optional<UserEntity> findByNickname(String nickname);
 

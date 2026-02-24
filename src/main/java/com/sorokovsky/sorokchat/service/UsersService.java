@@ -45,8 +45,8 @@ public class UsersService implements UserDetailsService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<UserModel> getByNicknamePartial(String nickname) {
-        return repository.findByNicknameLikeIgnoreCase(nickname).map(mapper::toModel);
+    public List<UserModel> getByNicknamePartial(String nickname) {
+        return repository.findByNicknameLikeIgnoreCase(nickname).stream().map(mapper::toModel).toList();
     }
 
     @Transactional(readOnly = true)
