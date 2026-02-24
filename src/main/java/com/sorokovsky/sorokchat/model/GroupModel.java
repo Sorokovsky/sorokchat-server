@@ -9,7 +9,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class GroupEntity extends BaseModel {
+public class GroupModel extends BaseModel {
     private String nickname;
     private String displayName;
     private String description;

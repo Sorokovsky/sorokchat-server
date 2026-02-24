@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @AllArgsConstructor
 @Builder
-public class Contact extends BaseModel {
+public class ContactModel extends BaseModel {
     private final UserModel firstUser;
     private final UserModel secondUser;
 }

@@ -25,13 +25,11 @@ public class UsersController {
     public ResponseEntity<List<GetUserPayload>> findUsers(@PathVariable String term) {
         if (term.startsWith("@")) {
             if (term.length() == 1) throw new UserNotFoundException();
-            final var resultTerm = "%" + term.replaceFirst("@", "") + "%";
-            final var user = service.getByNicknamePartial(resultTerm).orElse(null);
+            final var user = service.getByNicknamePartial(term.replaceFirst("@", "")).orElse(null);
             if (user == null) throw new UserNotFoundException();
             return ResponseEntity.ok(List.of(mapper.toGet(user)));
         } else {
-            final var resultTerm = "%" + term + "%";
-            return ResponseEntity.ok(service.getByDisplayNamePartial(resultTerm).stream().map(mapper::toGet).toList());
+            return ResponseEntity.ok(service.getByDisplayNamePartial(term).stream().map(mapper::toGet).toList());
         }
     }
 

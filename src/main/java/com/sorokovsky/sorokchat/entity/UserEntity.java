@@ -11,7 +11,8 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Entity(name = "users")
+@Table(name = "users")
+@Entity
 public class UserEntity extends BaseEntity {
     @Column(unique = true, nullable = false)
     private String nickname;

@@ -10,7 +10,8 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Entity(name = "groups")
+@Table(name = "groups")
+@Entity
 public class GroupEntity extends BaseEntity {
     @Column(unique = true, nullable = false)
     private String nickname;
