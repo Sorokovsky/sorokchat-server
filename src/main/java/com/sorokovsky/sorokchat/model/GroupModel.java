@@ -14,4 +14,8 @@ public class GroupModel extends BaseModel {
     private String displayName;
     private String description;
     private Set<UserModel> members;
+
+    public boolean hasUser(UserModel user) {
+        return members.stream().anyMatch(member -> member.getId().equals(user.getId()));
+    }
 }

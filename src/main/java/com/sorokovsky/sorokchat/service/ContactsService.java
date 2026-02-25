@@ -32,6 +32,11 @@ public class ContactsService {
         return repository.findContact(userId, nickname).map(mapper::toModel);
     }
 
+    @Transactional(readOnly = true)
+    public Optional<ContactModel> getContactById(Long id) {
+        return repository.findById(id).map(mapper::toModel);
+    }
+
     @Transactional
     public void createContact(UserModel firstUser, UserModel secondUser) {
         try {

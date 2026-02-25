@@ -3,7 +3,10 @@ package com.sorokovsky.sorokchat.configuration;
 import com.sorokovsky.sorokchat.configurer.JwtConfigurer;
 import com.sorokovsky.sorokchat.deserializer.JweTokenDeserializer;
 import com.sorokovsky.sorokchat.deserializer.JwsTokenDeserializer;
+import com.sorokovsky.sorokchat.entrypoint.ForbiddenEntryPoint;
 import com.sorokovsky.sorokchat.entrypoint.UnauthorizedEntryPoint;
+import com.sorokovsky.sorokchat.interceptors.JwtChannelInterceptor;
+import com.sorokovsky.sorokchat.model.Authority;
 import com.sorokovsky.sorokchat.serializer.JweTokenSerializer;
 import com.sorokovsky.sorokchat.serializer.JwsTokenSerializer;
 import com.sorokovsky.sorokchat.service.CookieService;
@@ -35,12 +38,14 @@ public class SecurityConfiguration {
             CorsConfigurationSource corsConfigurationSource,
             JwtConfigurer jwtConfigurer,
             UnauthorizedEntryPoint unauthorizedEntryPoint,
-            PreAuthenticatedAuthenticationProvider preAuthenticatedAuthenticationProvider
+            PreAuthenticatedAuthenticationProvider preAuthenticatedAuthenticationProvider,
+            ForbiddenEntryPoint forbiddenEntryPoint
     ) {
         http
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/openapi.yaml").permitAll()
+                        .requestMatchers("/ws/**", "/swagger-ui/**", "/v3/api-docs/**", "/openapi.yaml").permitAll()
                         .requestMatchers("/authorization/register", "/authorization/login").anonymous()
+                        .requestMatchers(HttpMethod.DELETE, "/authorization/logout").hasAnyAuthority(Authority.JWT_LOGOUT.name())
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sessionManagement -> sessionManagement
@@ -48,9 +53,7 @@ public class SecurityConfiguration {
                 )
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .authenticationEntryPoint(unauthorizedEntryPoint)
-                        .accessDeniedHandler((request, response, accessDeniedException) -> {
-
-                        })
+                        .accessDeniedHandler(forbiddenEntryPoint)
                 )
                 .authenticationProvider(preAuthenticatedAuthenticationProvider)
                 .csrf(AbstractHttpConfigurer::disable)
@@ -108,5 +111,13 @@ public class SecurityConfiguration {
         final var provider = new PreAuthenticatedAuthenticationProvider();
         provider.setPreAuthenticatedUserDetailsService(tokenUserService);
         return provider;
+    }
+
+    @Bean
+    public JwtChannelInterceptor jwtChannelInterceptor(
+            JwsTokenDeserializer jwsTokenDeserializer,
+            UsersService usersService
+    ) {
+        return new JwtChannelInterceptor(jwsTokenDeserializer, usersService);
     }
 }

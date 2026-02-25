@@ -11,7 +11,6 @@ import com.sorokovsky.sorokchat.model.UserModel;
 import com.sorokovsky.sorokchat.repository.UsersRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -107,7 +106,7 @@ public class UsersService implements UserDetailsService {
 
     @Override
     @Transactional(readOnly = true)
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserModel loadUserByUsername(String username) throws UsernameNotFoundException {
         return getByNickname(username).orElseThrow(() -> new UsernameNotFoundException(username));
     }
 }

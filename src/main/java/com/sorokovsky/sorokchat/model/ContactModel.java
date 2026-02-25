@@ -12,4 +12,8 @@ import lombok.EqualsAndHashCode;
 public class ContactModel extends BaseModel {
     private final UserModel firstUser;
     private final UserModel secondUser;
+
+    public boolean hasUser(UserModel user) {
+        return firstUser.getId().equals(user.getId()) || secondUser.getId().equals(user.getId());
+    }
 }
