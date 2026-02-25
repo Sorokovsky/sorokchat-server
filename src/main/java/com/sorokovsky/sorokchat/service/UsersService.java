@@ -35,6 +35,11 @@ public class UsersService implements UserDetailsService {
     }
 
     @Transactional(readOnly = true)
+    public UserModel getByIdRequired(Long id) {
+        return repository.findById(id).map(mapper::toModel).orElseThrow(UserNotFoundException::new);
+    }
+
+    @Transactional(readOnly = true)
     public Optional<UserModel> getByNickname(String nickname) {
         return repository.findByNickname(nickname).map(mapper::toModel);
     }

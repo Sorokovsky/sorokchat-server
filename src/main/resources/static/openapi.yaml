@@ -638,6 +638,46 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetail'
+    get:
+      summary: Отримання одного чату.
+      description: Отримання одного чату із системи.
+      operationId: /groups/get-by-id
+      security:
+        - bearerAuthorization: [ ]
+      tags:
+        - Групи
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Успішне отримання.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetGroupPayload'
+        401:
+          description: Неавторизований користувач.
+          headers:
+            WWW-AUTHENTICATE:
+              required: true
+              description: Спосіб авторизації.
+              schema:
+                type: string
+                example: Form
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        404:
+          description: Групу не знайдено.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
 components:
   securitySchemes:
     bearerAuthorization:
