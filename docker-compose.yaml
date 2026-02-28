@@ -11,6 +11,17 @@ services:
       - SPRING_PROFILES_ACTIVE=docker
     depends_on:
       - sorokchat.database
+  sorokchat.pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: sorokchat.pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: Sorokovskys@ukr.net
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "8081:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
   sorokchat.database:
     image: postgres:18-alpine
     container_name: sorokchat.database
@@ -24,3 +35,4 @@ services:
       - ./pgdata:/var/lib/postgresql/data/pgdata
 volumes:
   pgdata:
+  pgadmin_data: 
