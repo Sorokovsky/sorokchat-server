@@ -1,0 +1,99 @@
+openapi: 3.1.0
+info:
+  title: Sorokchat
+  description: Український захищений месенджер
+  version: 1.0.0
+components:
+  schemas:
+    GetUserPayload:
+      type: object
+      required:
+        - id
+        - login
+        - displayName
+        - role
+      properties:
+        id:
+          type: integer
+          description: Унікальний ідентифікатор користувача
+          example: 1
+        login:
+          type: string
+          description: Логін користувача
+          example: andrey
+        displayName:
+          type: string
+          description: Видиме ім'я користувача
+          example: Сороковський Андрій
+        role:
+          type: string
+          description: Роль користувача
+          example: USER
+    RegisterPayload:
+      type: object
+      required:
+        - login
+        - password
+      properties:
+        login:
+          type: string
+          description: Логін користувача
+          example: andrey
+        password:
+          type: string
+          description: Пароль користувача
+          example: <PASSWORD>
+        displayName:
+          type: string
+          description: Видиме ім'я користувача
+          example: Сороковський Андрій
+    LoginPayload:
+      type: object
+      required:
+        - login
+        - password
+      properties:
+        login:
+          type: string
+          description: Логін користувача
+          example: andrey
+        password:
+          type: string
+          description: Пароль користувача
+          example: <PASSWORD>
+  responses:
+    RegisteredResponse:
+      description: Користувача успішно зареєстровано у системі
+      headers:
+        Location:
+          $ref: '#/components/headers/Location'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GetUserPayload'
+  headers:
+    Location:
+      description: Посилання на авторизованого користувача
+      schema:
+        type: string
+        format: uri
+        required: true
+        example: 'http://localhost:8080/authorization/register'
+servers:
+  - url: 'http://localhost:8080'
+paths:
+  /authorization/register:
+    post:
+      tags:
+        - Авторизація
+      summary: Реєстрація користувача
+      description: Реєструє користувача у система
+      operationId: register
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterPayload'
+      responses:
+        201:
+          $ref: '#/components/responses/RegisteredResponse'
