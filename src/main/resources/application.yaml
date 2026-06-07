@@ -3,3 +3,12 @@ spring:
     name: sorokchat-backend
 server:
   port: 8080
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    path: /swagger-ui.html
+    url: /openapi.yaml
+  use-management-port: false
+  auto-tag-classes: false
+  writer-with-default-pretty-printer: true

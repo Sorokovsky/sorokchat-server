@@ -6,6 +6,7 @@ info:
 components:
   schemas:
     GetUserPayload:
+      description: Данні для отримання користувача
       type: object
       required:
         - id
@@ -30,6 +31,7 @@ components:
           description: Роль користувача
           example: USER
     RegisterPayload:
+      description: Данні для реєстрації користувача
       type: object
       required:
         - login
@@ -49,6 +51,7 @@ components:
           example: Сороковський Андрій
     LoginPayload:
       type: object
+      description: Данні для входу користувача у систему
       required:
         - login
         - password
@@ -61,12 +64,75 @@ components:
           type: string
           description: Пароль користувача
           example: <PASSWORD>
+    ErrorPayload:
+      description: Помилка при взаємодії
+      type: object
+      required:
+        - title
+        - status
+      properties:
+        type:
+          type: string
+          format: uri
+          description: URI-посилання на тип помилки. `about:blank` означає, що специфічний тип не визначено
+          example: 'http://localhost:8080/errors/bad-request'
+        title:
+          type: string
+          description: Зрозумілий, короткий опис помилки
+          example: Не коректні данні
+        status:
+          type: integer
+          description: HTTP статус код помилки
+          example: 400
+        detail:
+          type: string
+          description: Детальне пояснення помилки
+          example: Не коректні данні авторизації
+        instance:
+          type: string
+          description: URI, що вказує на конкретний запит, який спричинив помилку
+          example: '/authorization/login'
+        properties:
+          type: object
+          description: Додаткові поля помилки
+          additionalProperties: true
   responses:
-    RegisteredResponse:
-      description: Користувача успішно зареєстровано у системі
+    AuthorizedResponse:
+      description: Користувача авторизувався у системі
       headers:
         Location:
           $ref: '#/components/headers/Location'
+        Authorization:
+          $ref: '#/components/headers/Authorization'
+    ForbiddenResponse:
+      description: Немає доступу
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorPayload'
+    BadRequestResponse:
+      description: Некоректні данні
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorPayload'
+    ConflictResponse:
+      description: Конфлікт даних
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorPayload'
+    UnauthorizedResponse:
+      description: Не авторизовано
+      headers:
+        WWW-Authenticate:
+          $ref: '#/components/headers/WWW-Authenticate'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorPayload'
+    ProfileResponse:
+      description: Успішне отримання користувача
       content:
         application/json:
           schema:
@@ -78,7 +144,19 @@ components:
         type: string
         format: uri
         required: true
-        example: 'http://localhost:8080/authorization/register'
+        example: 'http://localhost:8080/authorization/profile'
+    Authorization:
+      description: JWT Token для авторизація
+      schema:
+        type: string
+        required: true
+        example: Bearer <TOKEN>
+    WWW-Authenticate:
+      description: Метод автентифікації
+      schema:
+        type: string
+        required: true
+        example: Bearer
 servers:
   - url: 'http://localhost:8080'
 paths:
@@ -96,4 +174,53 @@ paths:
               $ref: '#/components/schemas/RegisterPayload'
       responses:
         201:
-          $ref: '#/components/responses/RegisteredResponse'
+          $ref: '#/components/responses/AuthorizedResponse'
+        400:
+          $ref: '#/components/responses/BadRequestResponse'
+        403:
+          $ref: '#/components/responses/ForbiddenResponse'
+        409:
+          $ref: '#/components/responses/ConflictResponse'
+  /authorization/login:
+    post:
+      tags:
+        - Авторизація
+      summary: Вхід
+      description: Вхід користувача у систему
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginPayload'
+      responses:
+        201:
+          $ref: '#/components/responses/AuthorizedResponse'
+        400:
+          $ref: '#/components/responses/BadRequestResponse'
+        403:
+          $ref: '#/components/responses/ForbiddenResponse'
+  /authorization/profile:
+    get:
+      tags:
+        - Авторизація
+      summary: Профіль
+      description: Отримання авторизованого користувача
+      operationId: profile
+      responses:
+        200:
+          $ref: '#/components/responses/ProfileResponse'
+        401:
+          $ref: '#/components/responses/UnauthorizedResponse'
+  /authorization/logout:
+    delete:
+      tags:
+        - Авторизація
+      summary: Вихід
+      description: Вихід користувача із системи
+      operationId: logout
+      responses:
+        204:
+          description: Успішний вихід
+        401:
+          $ref: '#/components/responses/UnauthorizedResponse'
