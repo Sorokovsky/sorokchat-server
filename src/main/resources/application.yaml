@@ -1,6 +1,16 @@
 spring:
   application:
     name: sorokchat-backend
+  datasource:
+    url: jdbc:postgresql://localhost:5432/sorokchat
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  flyway:
+    enabled: true
+    locations: classpath:db/migrations
+    baseline-on-migrate: true
+    validate-on-migrate: true
 server:
   port: 8080
 springdoc:

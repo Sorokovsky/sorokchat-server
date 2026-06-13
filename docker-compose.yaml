@@ -1,0 +1,35 @@
+services:
+  sorokchat.database:
+    image: postgres:17-alpine
+    container_name: sorokchat.database
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: sorokchat
+    ports:
+      - '5432:5432'
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d sorokchat" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  sorokchat.pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: sorokchat.pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: sorokovskys@ukr.net
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: 'false'
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
+    ports:
+      - '5050:80'
+    depends_on:
+      sorokchat.database:
+        condition: service_healthy
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+volumes:
+  postgres_data:
+  pgadmin_data:
