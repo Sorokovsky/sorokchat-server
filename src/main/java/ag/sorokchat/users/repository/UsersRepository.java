@@ -1,5 +1,6 @@
 package ag.sorokchat.users.repository;
 
+import ag.sorokchat.users.contract.NewUserPayload;
 import ag.sorokchat.users.model.User;
 
 import java.util.List;
@@ -9,7 +10,7 @@ public interface UsersRepository {
     Optional<User> findById(Long id);
     Optional<User> findByLogin(String login);
     List<User> findAll();
-    User create(User user);
+    User create(NewUserPayload newUser);
     void deleteById(Long id);
     boolean existsById(Long id);
     User update(User user);

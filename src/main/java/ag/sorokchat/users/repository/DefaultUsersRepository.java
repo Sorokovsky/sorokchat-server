@@ -1,5 +1,6 @@
 package ag.sorokchat.users.repository;
 
+import ag.sorokchat.users.contract.NewUserPayload;
 import ag.sorokchat.users.mapper.UserMapper;
 import ag.sorokchat.users.model.User;
 import lombok.RequiredArgsConstructor;
@@ -46,13 +47,13 @@ public class DefaultUsersRepository implements UsersRepository {
     }
 
     @Override
-    public User create(User user) {
+    public User create(NewUserPayload newUserPayload) {
         final var sql = "select * from sorokchat.create_user(?, ?, ?)";
         return jdbcClient
                 .sql(sql)
-                .param(1, user.getLogin())
-                .param(2, user.getPassword())
-                .param(3, user.getDisplayName())
+                .param(1, newUserPayload.login())
+                .param(2, newUserPayload.password())
+                .param(3, newUserPayload.displayName())
                 .query(mapper)
                 .stream()
                 .findFirst()

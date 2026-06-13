@@ -18,13 +18,11 @@ public class UsersService {
     private final PasswordEncoder passwordEncoder;
 
     public User create(NewUserPayload newUser) {
-        final var user = User.builder()
-                .login(newUser.login())
-                .password(passwordEncoder.encode(newUser.password()))
-                .displayName(newUser.displayName())
-                .roles(List.of(Role.USER))
-                .build();
-        return repository.create(user);
+        return repository.create(new NewUserPayload(
+                newUser.login(),
+                passwordEncoder.encode(newUser.password()),
+                newUser.displayName()
+        ));
     }
 
     public List<User> getAll() {
