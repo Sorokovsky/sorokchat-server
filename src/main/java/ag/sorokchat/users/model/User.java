@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
+
 @Data
 @SuperBuilder
 @AllArgsConstructor
@@ -14,5 +16,5 @@ public class User {
     private String login;
     private String displayName;
     private String password;
-    private Role role;
+    private List<Role> roles;
 }

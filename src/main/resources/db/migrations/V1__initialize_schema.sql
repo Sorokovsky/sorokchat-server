@@ -79,7 +79,7 @@ end;
 $$;
 
 create or replace view sorokchat.users_with_roles as
-select u.id, u.login, u.password, u.display_name, array_agg(r.role) from sorokchat.users u
+select u.id, u.login, u.password, u.display_name, array_agg(r.role) as roles from sorokchat.users u
 left join sorokchat.users_roles ur on u.id = ur.user_id
 left join sorokchat.roles r on ur.role_id = r.id
 group by u.id, u.login, u.password, u.display_name;
