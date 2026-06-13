@@ -1,6 +1,5 @@
 package ag.sorokchat.users.service;
 
-import ag.sorokchat.users.contract.UpdateUserPayload;
 import ag.sorokchat.users.model.Role;
 import ag.sorokchat.users.contract.NewUserPayload;
 import ag.sorokchat.users.model.User;
@@ -23,7 +22,7 @@ public class UsersService {
                 .login(newUser.login())
                 .password(passwordEncoder.encode(newUser.password()))
                 .displayName(newUser.displayName())
-                .role(Role.USER)
+                .roles(List.of(Role.USER))
                 .build();
         return repository.create(user);
     }

@@ -100,7 +100,7 @@ begin
     insert into sorokchat.users (login, password, display_name)
     values (new_login, new_password, coalesce(new_display_name, new_login))
     returning id into new_user_id;
-    select id into new_role_id from sorokchat.roles r where r.name = 'USER';
+    select id into new_role_id from sorokchat.roles r where r.role = 'USER';
     insert into sorokchat.users_roles (user_id, role_id) values (new_user_id, new_role_id);
     select * into result from sorokchat.users_with_roles where id = new_user_id;
     return result;
