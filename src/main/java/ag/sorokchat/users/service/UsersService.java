@@ -1,6 +1,5 @@
 package ag.sorokchat.users.service;
 
-import ag.sorokchat.users.model.Role;
 import ag.sorokchat.users.contract.NewUserPayload;
 import ag.sorokchat.users.model.User;
 import ag.sorokchat.users.repository.UsersRepository;
